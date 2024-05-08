@@ -9,6 +9,11 @@ const WelcomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Company logo image */}
+      <Image
+        source={require('../src/image/cogradLogo.png')} // Replace '../path/to/your/company_logo.png' with the actual path to your company logo image
+        style={styles.logo}
+      />
       <View style={styles.textContainer}>
         <View>
           <Text style={styles.title}>मेरा बच्चा</Text>
@@ -35,6 +40,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: '#fff',
     marginBottom: -20,
+  },
+  logo: {
+    position: 'absolute',
+    top: 20, // Adjust the top position as needed
+    left: 20, // Adjust the left position as needed
+    width: 140, // Adjust the width as needed
+    height: 80, // Adjust the height as needed
   },
   textContainer: {
     alignItems: 'center',

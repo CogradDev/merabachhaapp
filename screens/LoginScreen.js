@@ -17,6 +17,11 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Company logo image */}
+      <Image
+        source={require('../src/image/cogradLogo.png')} // Replace '../path/to/your/company_logo.png' with the actual path to your company logo image
+        style={styles.logo}
+      />
       {/* Added image */}
       <Image
         source={require('../src/image/MobileLogin.png')} // Replace '../path/to/your/image.jpg' with the actual path to your image
@@ -43,6 +48,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#fff', // Added background color
+  },
+  logo: {
+    position: 'absolute',
+    top: 20, // Adjust the top position as needed
+    left: 20, // Adjust the left position as needed
+    width: 140, // Adjust the width as needed
+    height: 80, // Adjust the height as needed
   },
   input: {
     width: '80%',
