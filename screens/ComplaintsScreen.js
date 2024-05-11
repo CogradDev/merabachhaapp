@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   FlatList,
+  PermissionsAndroid,
 } from 'react-native';
 import MicroPhoneAlt from '../src/svg/MicroPhoneAlt';
 import Stop from '../src/svg/Stop';
@@ -38,20 +39,31 @@ const ComplaintsScreen = () => {
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer());
 
   useEffect(() => {
-    // Check and set file system permissions
-    const checkAndSetPermissions = async () => {
+    // Check and request audio recording permission
+    const requestAudioRecordingPermission = async () => {
       try {
-        const permission =
-          await audioRecorderPlayer.current.requestPermission();
-        console.log('Permission status:', permission);
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Permission to use microphone',
+            message: 'Please grant permission to record audio',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Audio recording permission granted');
+        } else {
+          console.log('Audio recording permission denied');
+        }
       } catch (error) {
         console.log('Error requesting permission:', error);
       }
     };
 
-    checkAndSetPermissions();
+    requestAudioRecordingPermission();
   }, []);
 
+  // Function to generate audio file name
   const generateAudioName = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -63,6 +75,7 @@ const ComplaintsScreen = () => {
     return `audio-${year}${month}${day}-${hours}${minutes}${seconds}`;
   };
 
+  // Function to start recording audio
   const startRecording = async () => {
     const fileName = generateAudioName() + '.aac';
     const filePath = RNFS.DocumentDirectoryPath + '/' + fileName;
@@ -87,6 +100,7 @@ const ComplaintsScreen = () => {
     }
   };
 
+  // Function to stop recording audio
   const stopRecording = async () => {
     try {
       const result = await audioRecorderPlayer.current.stopRecorder();
@@ -98,6 +112,7 @@ const ComplaintsScreen = () => {
     }
   };
 
+  // Function to play audio
   const playAudio = async path => {
     try {
       if (active === path) {
@@ -133,6 +148,7 @@ const ComplaintsScreen = () => {
     }
   };
 
+  // Function to submit a complaint
   const submitComplaint = () => {
     const fileName = generateAudioName() + '.aac';
     const newComplaint = {
@@ -147,6 +163,7 @@ const ComplaintsScreen = () => {
     setAudioPath('');
   };
 
+  // Function to cancel recording
   const cancelRecording = async () => {
     try {
       if (isRecording) {
@@ -154,12 +171,13 @@ const ComplaintsScreen = () => {
       }
       setAudioPath(''); // Clear audioPath on cancel
       setModalVisible(false);
-      setIsPlaying();
+      setIsPlaying(false);
     } catch (error) {
       console.log('Error canceling recording:', error);
     }
   };
 
+  // Function to render each recording item in the list
   const renderRecordingItem = ({item}) => (
     <TouchableOpacity
       style={styles.recordingItem}
@@ -177,14 +195,18 @@ const ComplaintsScreen = () => {
         onPress={isRecording ? stopRecording : startRecording}
         style={[styles.button, isRecording && styles.activeButton]}>
         {isRecording ? (
-           <>
-           <Stop size={30} color="red" />
-           <Text style={styles.buttonText}>रिकॉर्डिंग रोकने के लिए टैप करें</Text>
-         </>
+          <>
+            <Stop size={30} color="red" />
+            <Text style={styles.buttonText}>
+              रिकॉर्डिंग रोकने के लिए टैप करें
+            </Text>
+          </>
         ) : (
           <>
             <MicroPhoneAlt size={30} color="black" />
-            <Text style={styles.buttonText}>आवाज रिकॉर्ड करने के लिए टैप करें</Text>
+            <Text style={styles.buttonText}>
+              आवाज रिकॉर्ड करने के लिए टैप करें
+            </Text>
           </>
         )}
       </TouchableOpacity>
@@ -247,7 +269,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subHeading: {
-   
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333333',
@@ -273,17 +294,17 @@ const styles = StyleSheet.create({
     width: 140,
   },
 
-  playbackContainer :{
+  playbackContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom :10,
-    width : "100%",
+    marginBottom: 10,
+    width: '100%',
   },
   audioControls: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    width : "100%",
+    width: '100%',
     marginVertical: 20,
   },
   controlText: {

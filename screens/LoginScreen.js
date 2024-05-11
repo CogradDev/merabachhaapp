@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
+    // Check if permissions are granted
+    const audioPermission = await check(PERMISSIONS.ANDROID.RECORD_AUDIO);
+
     // Here you can add logic to verify the phone number and navigate to the child's information screen
     if (phoneNumber.trim() === '') {
       alert('Please enter a valid phone number.');
       return;
     }
 
-    // For demonstration purposes, navigate to a placeholder child information screen
-    navigation.navigate('MainApp');
+    if (
+            audioPermission !== RESULTS.GRANTED
+    ) {
+      // Permissions not granted, navigate to PermissionScreen
+      navigation.navigate('PermissionScreen');
+    } else {
+      // Permissions granted, navigate to MainApp
+      navigation.navigate('progress');
+    }
   };
-
   return (
     <View style={styles.container}>
       {/* Company logo image */}

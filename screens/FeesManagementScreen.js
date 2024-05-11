@@ -13,7 +13,7 @@ const FeesManagementScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>फीस प्रबंधन</Text>
+      <Text style={[styles.heading, { color: '#6495ed' }]}>फीस प्रबंधन</Text>
 
       <View style={styles.content}>
         <View style={styles.box}>
