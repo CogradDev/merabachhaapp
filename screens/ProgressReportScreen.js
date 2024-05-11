@@ -6,35 +6,31 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import Bell from '../src/svg/Bell';
 
-const ProgressReportScreen = ({navigation}) => {
-  // Sample data for the child's information
+const { width } = Dimensions.get('window');
+
+const ProgressReportScreen = ({ navigation }) => {
   const childInfo = {
     name: 'आर्या कुमार',
     grade: '6',
     section: 'A',
     rollNumber: '101',
-    attendance: '80%', // Example attendance value
+    attendance: '80%', 
   };
 
   const subjects = [
-    {name: 'गणित', grade: 'A', feedback: 'अवधारणाओं की अच्छी समझ.'},
-    {name: 'विज्ञान', grade: 'B', feedback: 'प्रयोगों में सुधार की जरूरत है.'},
-    {name: 'इतिहास', grade: 'A+', feedback: 'क्विज़ में उत्कृष्ट प्रदर्शन.'},
-    {
-      name: 'अंग्रेज़ी',
-      grade: 'B-',
-      feedback: 'व्याकरण और शब्दावली पर ध्यान दें.',
-    },
-    {name: 'कला', grade: 'A', feedback: 'रचनात्मक और अभिव्यंजक कलाकृति.'},
-    // Add more subjects as needed
+    { name: 'गणित', grade: 'A', feedback: 'अवधारणाओं की अच्छी समझ.' },
+    { name: 'विज्ञान', grade: 'B', feedback: 'प्रयोगों में सुधार की जरूरत है.' },
+    { name: 'इतिहास', grade: 'A+', feedback: 'क्विज़ में उत्कृष्ट प्रदर्शन.' },
+    { name: 'अंग्रेज़ी', grade: 'B-', feedback: 'व्याकरण और शब्दावली पर ध्यान दें.' },
+    { name: 'कला', grade: 'A', feedback: 'रचनात्मक और अभिव्यंजक कलाकृति.' },
   ];
 
   const handleSubjectPress = subject => {
-    // Navigate to detailed progress screen for the selected subject
-    navigation.navigate('SubjectDetails', {subject});
+    navigation.navigate('SubjectDetails', { subject });
   };
 
   const goToFeesScreen = () => {
@@ -46,27 +42,22 @@ const ProgressReportScreen = ({navigation}) => {
   };
 
   const handleNotificationPress = () => {
-    navigation.navigate('Notification'); // Navigate to the NotificationScreen
+    navigation.navigate('Notification'); 
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        {/* Company Logo */}
-      <Image
-        source={require('../src/image/cogradLogo.png')}
-        style={styles.logo}
-      />
-
-      <Text style={[styles.title, { color: '#6495ed' }]}>प्रगति रिपोर्ट</Text>
-      
-      {/* Notification Bell Icon */}
-      <TouchableOpacity
-        style={styles.notificationIcon}
-        onPress={handleNotificationPress}>
-        <Bell size={25} color="#333" />
-      </TouchableOpacity>
-
+        <Image
+          source={require('../src/image/cogradLogo.png')}
+          style={styles.logo}
+        />
+        <Text style={[styles.title, { color: '#6495ed' }]}>प्रगति रिपोर्ट</Text>
+        <TouchableOpacity
+          style={styles.notificationIcon}
+          onPress={handleNotificationPress}>
+          <Bell size={width * 0.05} color="#333" />
+        </TouchableOpacity>
       </View>
       <View style={styles.childInfoContainer}>
         <Text style={styles.childInfo}>नाम: {childInfo.name}</Text>
@@ -76,8 +67,6 @@ const ProgressReportScreen = ({navigation}) => {
         <Text style={styles.childInfo}>रोल नंबर: {childInfo.rollNumber}</Text>
         <Text style={styles.childInfo}>उपस्थिति: {childInfo.attendance}</Text>
       </View>
-
-      {/* Boxes for Fees and Complaint screens */}
       <View style={styles.boxContainer}>
         <TouchableOpacity
           style={[styles.box, styles.complaintBox]}
@@ -91,8 +80,7 @@ const ProgressReportScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <Text style={styles.sectionTitle}>विषयों में प्रगति:</Text>
-      
-       <View style={styles.table}>
+      <View style={styles.table}>
         <View style={styles.tableRow}>
           <Text style={[styles.tableCell, styles.headerText]}>विषय</Text>
           <Text style={[styles.tableCell, styles.headerText]}>ग्रेड</Text>
@@ -116,70 +104,69 @@ const ProgressReportScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop : 10,
+    paddingHorizontal: width * 0.05,
+    paddingTop: width * 0.01,
   },
-  headerContainer :{
-    flexDirection : "row",
-    width : "100%",
-    justifyContent : "space-between",
-    alignItems : "center",
+  headerContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: width * 0.06,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: width * 0.05,
     textAlign: 'center',
-    marginLeft: -30,
+    marginLeft: -width * 0.2,
   },
   logo: {
-    width: 100,
-    height: 50,
+    width: width * 0.25,
+    height: width * 0.2,
   },
   notificationIcon: {
-    height : 22,
-    width : 22,
-    marginBottom : 10,
+    height: width * 0.06,
+    width: width * 0.06,
+    marginBottom: width * 0.05,
   },
-
   childInfoContainer: {
-    marginBottom: 15,
-    padding: 15,
+    marginBottom: width * 0.02,
+    padding: width * 0.035,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
+    borderRadius: width * 0.02,
     elevation: 3,
   },
   childInfo: {
-    fontSize: 18,
-    marginBottom: 5,
+    fontSize: width * 0.04,
+    marginBottom: width * 0.01,
     color: '#333333',
   },
-  sectionTitle:{
-    fontSize : 20,
-    fontWeight : "bold",
-    marginBottom : 10,
+  sectionTitle: {
+    fontSize: width * 0.05,
+    fontWeight: 'bold',
+    marginBottom: width * 0.02,
   },
   table: {
     borderWidth: 1,
     borderColor: '#cccccc',
-    borderRadius: 10,
+    borderRadius: width * 0.02,
     overflow: 'hidden',
     backgroundColor: '#fff',
-    marginBottom: 20,
+    marginBottom: width * 0.04,
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#cccccc',
-    paddingVertical: 12,
+    paddingVertical: width * 0.025,
   },
   tableCell: {
     flex: 1,
     textAlign: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: width * 0.02,
+    paddingHorizontal: width * 0.03,
     color: '#333333',
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
   headerText: {
     fontWeight: 'bold',
@@ -189,13 +176,13 @@ const styles = StyleSheet.create({
   boxContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom : 20,
+    marginTop: width * 0.04,
+    marginBottom: width * 0.04,
   },
   box: {
     width: '48%',
-    height: 120,
-    borderRadius: 10,
+    height: width * 0.2,
+    borderRadius: width * 0.02,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 3,
@@ -207,7 +194,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff6347',
   },
   boxText: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
     color: '#fff',
   },

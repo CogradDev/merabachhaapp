@@ -196,14 +196,14 @@ const ComplaintsScreen = () => {
         style={[styles.button, isRecording && styles.activeButton]}>
         {isRecording ? (
           <>
-            <Stop size={30} color="red" />
+            <Stop size={width * 0.1} color="red" />
             <Text style={styles.buttonText}>
               रिकॉर्डिंग रोकने के लिए टैप करें
             </Text>
           </>
         ) : (
           <>
-            <MicroPhoneAlt size={30} color="black" />
+            <MicroPhoneAlt size={width * 0.1} color="black" />
             <Text style={styles.buttonText}>
               आवाज रिकॉर्ड करने के लिए टैप करें
             </Text>
@@ -217,9 +217,9 @@ const ComplaintsScreen = () => {
             onPress={() => playAudio(audioPath)}
             style={styles.playButton}>
             {isPlaying ? (
-              <Pause size={30} color="black" />
+              <Pause size={width * 0.08} color="black" />
             ) : (
-              <Play size={30} color="black" />
+              <Play size={width * 0.08} color="black" />
             )}
           </TouchableOpacity>
           <View style={styles.audioControls}>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   heading: {
-    fontSize: 24,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
     marginBottom: 20,
   },
@@ -269,17 +269,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subHeading: {
-    fontSize: 18,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
     color: '#333333',
   },
   button: {
-    marginVertical: 140,
-    padding: 40,
+    marginVertical: width * 0.2,
+    padding: width * 0.08,
     backgroundColor: '#F0F0F0',
     borderRadius: 100,
-    height: 180,
-    width: 180,
+    height: width * 0.45,
+    width: width * 0.45,
     alignItems: 'center',
   },
   activeButton: {
@@ -287,11 +287,11 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
-    marginTop: 50,
+    marginTop: width * 0.13,
     textAlign: 'center',
-    width: 140,
+    width: width * 0.35,
   },
 
   playbackContainer: {
@@ -305,54 +305,54 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     width: '100%',
-    marginVertical: 20,
+    marginVertical: width * 0.05,
   },
   controlText: {
-    fontSize: 18,
+    fontSize: width * 0.036,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: width * 0.05,
+    paddingVertical: width * 0.03,
     borderRadius: 10,
     backgroundColor: '#007AFF',
   },
   playButton: {
-    marginVertical: 10,
-    padding: 15,
+    marginVertical: width * 0.03,
+    padding: width * 0.06,
     backgroundColor: '#F0F0F0',
-    borderRadius: 50,
-    height: 80,
-    width: 80,
+    borderRadius: width * 0.1,
+    height: width * 0.16,
+    width: width * 0.16,
   },
   recordingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingVertical: width * 0.036,
+    paddingHorizontal: width * 0.1,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
     width: '100%',
   },
   recordingName: {
-    fontSize: 16,
+    fontSize: width * 0.028,
     fontWeight: 'bold',
     color: '#333333',
   },
   recordingDate: {
-    fontSize: 14,
+    fontSize: width * 0.024,
     color: '#666666',
   },
   recordingStatus: {
-    fontSize: 14,
+    fontSize: width * 0.024,
     color: '#FF5733',
     fontWeight: 'bold',
   },
   submittedFileName: {
-    fontSize: 18,
+    fontSize: width * 0.036,
     fontWeight: 'bold',
     color: '#333333',
-    marginTop: 20,
+    marginTop: width * 0.05,
   },
 });
 

@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const WelcomeScreen = ({ navigation }) => {
   const handleGetStarted = () => {
-    // Navigate to the next screen (e.g., login or home screen)
-    navigation.navigate('LoginScreen'); // Change 'LoginScreen' to your actual screen name
+    navigation.navigate('LoginScreen');
   };
 
   return (
     <View style={styles.container}>
-      {/* Company logo image */}
       <Image
-        source={require('../src/image/cogradLogo.png')} // Replace '../path/to/your/company_logo.png' with the actual path to your company logo image
+        source={require('../src/image/cogradLogo.png')}
         style={styles.logo}
       />
       <View style={styles.textContainer}>
@@ -19,14 +19,12 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.title}>मेरा बच्चा</Text>
           <Text style={styles.subtitle}>आपका स्वागत है!</Text>
         </View>
-        {/* Custom styled button */}
         <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
           <Text style={styles.buttonText}>आरंभ करें</Text>
         </TouchableOpacity>
       </View>
-      {/* Image added */}
       <Image
-        source={require('../src/image/Parents.png')} // Replace '../path/to/your/image.jpg' with the actual path to your image
+        source={require('../src/image/Parents.png')}
         style={styles.image}
       />
     </View>
@@ -39,45 +37,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     backgroundColor: '#fff',
-    marginBottom: -20,
+    paddingBottom: height * 0.002,
   },
   logo: {
     position: 'absolute',
-    top: 20, // Adjust the top position as needed
-    left: 20, // Adjust the left position as needed
-    width: 140, // Adjust the width as needed
-    height: 80, // Adjust the height as needed
+    top: height * 0.02,
+    left: width * 0.05,
+    width: width * 0.31,
+    height: height * 0.118,
   },
   textContainer: {
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: width * 0.08,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: height * 0.03,
     color: '#333',
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 20,
-    marginBottom: 140,
+    fontSize: width * 0.06,
+    marginBottom: height * 0.2,
     color: '#333',
     textAlign: 'center',
   },
   image: {
-    width: 500,
-    height: 500,
+    width: width ,
+    height: width * 0.9,
   },
   button: {
     backgroundColor: '#6495ed',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
+    paddingVertical: height * 0.01,
+    paddingHorizontal: width * 0.06,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: height * 0.03,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: width * 0.05,
     textAlign: 'center',
   },
 });

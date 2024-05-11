@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, PermissionsAndroid, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const PermissionScreen = ({ navigation }) => {
   const [permissionsStatus, setPermissionsStatus] = useState({});
@@ -39,7 +41,7 @@ const PermissionScreen = ({ navigation }) => {
           <Text style={styles.cell}>माइक्रोफ़ोन</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.cell}>अधिसूचनाएं</Text>
+          <Text style={styles.cell}>नोटिफिकेशन</Text>
         </View>
         {/* Add more permissions here following the same format */}
         {/* <View style={styles.row}>
@@ -58,17 +60,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
+    fontSize: width * 0.06,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: width * 0.05,
   },
   subtitle: {
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: width * 0.04,
+    marginBottom: width * 0.05,
     textAlign: 'center',
   },
   table: {
@@ -78,25 +80,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: width * 0.03,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
   cell: {
     flex: 1,
-    fontSize: 16,
+    fontSize: width * 0.035,
     fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#6495ed',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 5,
-    marginTop: 20,
+    paddingVertical: width * 0.04,
+    paddingHorizontal: width * 0.08,
+    borderRadius: width * 0.02,
+    marginTop: width * 0.1,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
   },
 });

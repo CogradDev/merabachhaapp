@@ -1,9 +1,9 @@
-// NotificationScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const NotificationScreen = () => {
-  // Sample notifications data
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'शिक्षक से नया संदेश', message: 'आपके शिक्षक से एक नया संदेश मिला है।', read: false },
     { id: 2, title: 'असाइनमेंट रिमाइंडर', message: 'रिमाइंडर: अपना विज्ञान प्रोजेक्ट शुक्रवार तक सबमिट करें।', read: true },
@@ -24,14 +24,14 @@ const NotificationScreen = () => {
     <TouchableOpacity
       style={[styles.notificationItem, item.read ? styles.readNotification : styles.unreadNotification]}
       onPress={() => markAsRead(item.id)}>
-      <Text style={styles.notificationTitle}>{item.title}</Text>
-      <Text style={styles.notificationMessage}>{item.message}</Text>
+      <Text style={[styles.notificationTitle, { fontSize: width * 0.04 }]}>{item.title}</Text>
+      <Text style={[styles.notificationMessage, { fontSize: width * 0.035 }]}>{item.message}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: '#6495ed' }]}>सूचनाएं</Text>
+      <Text style={[styles.title, { color: '#6495ed', fontSize: width * 0.06 }]}>सूचनाएं</Text>
       <FlatList
         data={notifications}
         renderItem={renderNotificationItem}
@@ -45,21 +45,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: width * 0.04,
+    paddingTop: width * 0.05,
   },
   title: {
-    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: width * 0.05,
     textAlign: 'center',
-    // Color set dynamically in the component
   },
   notificationItem: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 15,
-    padding: 15,
+    borderRadius: width * 0.05,
+    marginBottom: width * 0.03,
+    padding: width * 0.06,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -73,13 +71,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // Read notification color
   },
   notificationTitle: {
-    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
     color: '#333',
+    marginBottom: width * 0.015,
   },
   notificationMessage: {
-    fontSize: 16,
     color: '#555',
   },
 });
