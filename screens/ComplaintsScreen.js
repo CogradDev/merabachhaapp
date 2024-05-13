@@ -22,6 +22,7 @@ import {
 } from 'react-native-audio-recorder-player';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
+import ProgressBar from '../Components/ProgressBar';
 
 const {width} = Dimensions.get('window');
 
@@ -31,7 +32,7 @@ const ComplaintsScreen = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [recordings, setRecordings] = useState([]);
   const [active, setActive] = useState(null);
-  const [complaintStatus, setComplaintStatus] = useState('समाधान नहीं मिला');
+  const [complaintStatus, setComplaintStatus] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [submittedFileName, setSubmittedFileName] = useState('');
 
@@ -64,7 +65,7 @@ const ComplaintsScreen = () => {
   }, []);
 
   // Function to generate audio file name
-  const generateAudioName = () => {
+  const generateAudioName = (studentName, complaintNumber) => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -72,12 +73,14 @@ const ComplaintsScreen = () => {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    return `audio-${year}${month}${day}-${hours}${minutes}${seconds}`;
+    return `${studentName}-complaint${complaintNumber}-${year}${month}${day}-${hours}${minutes}${seconds}.aac`;
   };
 
   // Function to start recording audio
   const startRecording = async () => {
-    const fileName = generateAudioName() + '.aac';
+    const studentName = 'आर्या कुमार'; // Replace with actual student name
+    const complaintNumber = 123; // Replace with actual complaint number
+    const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
     const filePath = RNFS.DocumentDirectoryPath + '/' + fileName;
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -148,14 +151,30 @@ const ComplaintsScreen = () => {
     }
   };
 
+  const formatDate = timestamp => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
+
   // Function to submit a complaint
   const submitComplaint = () => {
-    const fileName = generateAudioName() + '.aac';
+    const studentName = 'आर्या कुमार'; // Replace with actual student name
+    const complaintNumber = 123; // Replace with actual complaint number
+    const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
+
     const newComplaint = {
       id: recordings.length + 1,
-      name: fileName,
+      name: studentName + '-शिकायत-' + complaintNumber,
+      audio: fileName,
       path: audioPath,
       status: complaintStatus,
+      date: formatDate(Date.now()),
     };
     setRecordings([newComplaint, ...recordings]);
     setSubmittedFileName(fileName); // Set the submitted file name directly
@@ -182,9 +201,13 @@ const ComplaintsScreen = () => {
     <TouchableOpacity
       style={styles.recordingItem}
       onPress={() => playAudio(item.path)}>
-      <Text style={styles.recordingName}>{item.name}</Text>
-      <Text style={styles.recordingDate}>{item.date}</Text>
-      <Text style={styles.recordingStatus}>{item.status}</Text>
+      <View style={styles.recordingDetails}>
+        <Text style={styles.recordingName}>{item.name}</Text>
+        <Text style={styles.recordingDate}>{item.date}</Text>
+      </View>
+      <View style={styles.statusContainer}>
+        <ProgressBar status={item.status} />
+      </View>
     </TouchableOpacity>
   );
 
@@ -254,19 +277,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: width * 0.05,
   },
   heading: {
     fontSize: width * 0.05,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: width * 0.05,
+    color: '#6495ed',
   },
 
   subHeadingContainer: {
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
-    marginBottom: 10,
+    marginBottom: width * 0.04,
+    marginTop: width * 0.05,
+    paddingBottom: width * 0.03,
   },
   subHeading: {
     fontSize: width * 0.04,
@@ -297,7 +323,7 @@ const styles = StyleSheet.create({
   playbackContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: width * 0.05,
     width: '100%',
   },
   audioControls: {
@@ -325,34 +351,40 @@ const styles = StyleSheet.create({
     width: width * 0.16,
   },
   recordingItem: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: width * 0.04,
+    paddingHorizontal: width * 0.05,
+    borderRadius: 20,
+    marginBottom: width * 0.05,
+    borderWidth: 2,
+    borderColor: '#6495ed',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 6,
+    width: width * 0.9,
+  },
+
+  recordingDetails: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: width * 0.036,
-    paddingHorizontal: width * 0.1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    width: '100%',
+    marginBottom: width * 0.05,
   },
   recordingName: {
-    fontSize: width * 0.028,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
     color: '#333333',
+    marginBottom: width * 0.01,
   },
   recordingDate: {
-    fontSize: width * 0.024,
+    fontSize: width * 0.03,
     color: '#666666',
-  },
-  recordingStatus: {
-    fontSize: width * 0.024,
-    color: '#FF5733',
-    fontWeight: 'bold',
-  },
-  submittedFileName: {
-    fontSize: width * 0.036,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginTop: width * 0.05,
   },
 });
 

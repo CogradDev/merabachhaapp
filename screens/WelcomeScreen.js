@@ -41,10 +41,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    top: height * 0.02,
-    left: width * 0.05,
-    width: width * 0.31,
-    height: height * 0.118,
+    top: height * 0.04,
+    width: width * 0.7,
+    height: height * 0.2,
   },
   textContainer: {
     alignItems: 'center',
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: width * 0.08,
     fontWeight: 'bold',
-    marginBottom: height * 0.03,
+    marginTop : height* 0.08,
     color: '#333',
     textAlign: 'center',
   },

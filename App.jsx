@@ -16,6 +16,7 @@ import LoginScreen from './screens/LoginScreen';
 import PermissionScreen from './screens/PermissionScreen';
 import 'react-native-gesture-handler';
 import NotificationScreen from './screens/NotificationScreen';
+import MainScreen from './screens/MainScreen';
 
 // const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -27,7 +28,7 @@ const App = () => {
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="PermissionScreen" component={PermissionScreen} />
-        {/* <Stack.Screen name="MainApp" component={MainApp} /> */}
+        <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="progress" component={ProgressReportScreen} />
         <Stack.Screen name="fees" component={FeesManagementScreen} />
         <Stack.Screen name="complaint" component={ComplaintsScreen} />

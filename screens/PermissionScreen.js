@@ -21,7 +21,7 @@ const PermissionScreen = ({ navigation }) => {
       if (
         Object.values(granted).every(status => status === PermissionsAndroid.RESULTS.GRANTED)
       ) {
-        navigation.navigate('progress');
+        navigation.navigate('Main');
       } else {
         alert('कृपया सभी आवश्यक अनुमतियां देने के लिए स्वीकृति दें।');
       }

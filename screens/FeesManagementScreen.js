@@ -7,6 +7,7 @@ const FeesManagementScreen = () => {
   const totalFees = 5000;
   const paidAmount = 3000;
   const remainingBalance = totalFees - paidAmount;
+  const attendancePercentage = 80; // Assuming attendance percentage
 
   const handlePayment = () => {
     console.log('Payment successful!');
@@ -35,6 +36,15 @@ const FeesManagementScreen = () => {
             <Text style={[styles.infoValue, { fontSize: width * 0.05 }]}>₹{remainingBalance}</Text>
           </View>
         </View>
+        <View>
+          <Text style={[styles.heading, styles.attendanceHeading]}>उपस्थिति</Text>
+        </View>
+        <View style={styles.attendanceBox}>
+          <View style={styles.infoBox}>
+            <Text style={[styles.infoLabel, styles.attendanceLabel]}>उपस्थिति:</Text>
+            <Text style={[styles.infoValue, styles.attendanceValue]}>{attendancePercentage}%</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -49,17 +59,29 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontWeight: 'bold',
-    marginBottom: width * 0.03,
-    textAlign: 'center',
+    textAlign: 'center',  
+    marginBottom: width * 0.07,
+
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   box: {
     backgroundColor: '#f9f9f9',
     borderWidth: 1,
     borderColor: '#ddd',
+    borderRadius: width * 0.02,
+    padding: width * 0.1,
+    marginBottom: width * 0.05,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+  },
+  attendanceBox: {
+    backgroundColor: '#ff7f50', // Coral color
     borderRadius: width * 0.02,
     padding: width * 0.1,
     marginBottom: width * 0.05,
@@ -82,6 +104,23 @@ const styles = StyleSheet.create({
   infoValue: {
     fontWeight: 'bold',
     color: '#6495ed',
+  },
+  attendanceHeading: {
+    fontSize: width * 0.06,
+    color: '#6495ed',
+    marginBottom: width * 0.05,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    textAlign: 'center',  
+    marginTop: width * 0.05,
+  },
+  attendanceLabel: {
+    fontSize: width * 0.04,
+    color: '#fff', // White color for attendance label
+  },
+  attendanceValue: {
+    fontSize: width * 0.05,
+    color: '#fff', // White color for attendance value
   },
 });
 

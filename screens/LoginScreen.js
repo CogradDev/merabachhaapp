@@ -18,7 +18,7 @@ const LoginScreen = ({ navigation }) => {
     if (audioPermission !== RESULTS.GRANTED) {
       navigation.navigate('PermissionScreen');
     } else {
-      navigation.navigate('progress');
+      navigation.navigate('Main');
     }
   };
 
@@ -55,10 +55,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    top: height * 0.02,
-    left: width * 0.05,
-    width: width * 0.31,
-    height: height * 0.12,
+    top: height * 0.04,
+    width: width * 0.7,
+    height: height * 0.2,
   },
   input: {
     width: width * 0.8,
