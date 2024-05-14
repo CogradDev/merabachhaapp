@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: 'center',
     justifyContent : "space-between",
-    paddingVertical :   height * 0.04,
-    top: height * 0.04,  
+    paddingVertical :   height * 0.06,
+    top: height * 0.05,  
     height : height* 0.4,
   },
   title: {
