@@ -47,17 +47,19 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
+    justifyContent : "space-between",
+    paddingVertical :   height * 0.04,
+    top: height * 0.04,  
+    height : height* 0.4,
   },
   title: {
     fontSize: width * 0.08,
     fontWeight: 'bold',
-    marginTop : height* 0.08,
     color: '#333',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: width * 0.06,
-    marginBottom: height * 0.2,
     color: '#333',
     textAlign: 'center',
   },
