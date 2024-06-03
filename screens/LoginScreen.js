@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import PhoneInput from 'react-native-phone-number-input';
 
 const { width, height } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [value, setValue] = useState('');
+  const [formattedValue, setFormattedValue] = useState('');
+  const [valid, setValid] = useState(false);
+  const phoneInput = useRef(null);
 
   const handleLogin = async () => {
     const audioPermission = await check(PERMISSIONS.ANDROID.RECORD_AUDIO);
 
-    if (phoneNumber.trim() === '') {
-      alert('Please enter a valid phone number.');
+    if (formattedValue.trim() === '') {
+      alert('कृपया सही फ़ोन नंबर डाले');
       return;
     }
 
@@ -23,52 +40,90 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('../src/image/cogradLogo.png')}
-        style={styles.logo}
-      />
-      <Image
-        source={require('../src/image/MobileLogin.png')}
-        style={styles.image}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="अपना फोन नंबर डालें"
-        keyboardType="phone-pad"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>लॉग इन करें</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <Image
+              source={require('../src/image/cogradLogo.png')}
+              style={styles.logo}
+            />
+            <Image
+              source={require('../src/image/MobileLogin.png')}
+              style={styles.image}
+            />
+
+            <PhoneInput
+              ref={phoneInput}
+              defaultValue={value}
+              defaultCode="IN"
+              layout="first"
+              onChangeText={(text) => {
+                setValue(text);
+              }}
+              onChangeFormattedText={(text) => {
+                setFormattedValue(text);
+              }}
+              placeholder = "अपना फोन नंबर डालें"
+              withDarkTheme
+              withShadow
+              autoFocus
+              containerStyle={styles.phoneInputContainer}
+              textContainerStyle={styles.phoneInputTextContainer}
+            />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleLogin}
+            >
+              <Text style={styles.buttonText}>लॉग इन करें</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    ackgroundColor: '#fff',
+    paddingVertical: height * 0.05,
+  },
+  inner: {
+    alignItems: 'center',
   },
   logo: {
-    position: 'absolute',
-    top: height * 0.04,
     width: width * 0.7,
     height: height * 0.2,
+    marginBottom: height * 0.02,
   },
-  input: {
+  image: {
+    width: width * 0.8,
+    height: width * 0.8,
+    marginBottom: height * 0.05,
+  },
+  phoneInputContainer: {
     width: width * 0.8,
     borderWidth: 2,
     borderColor: '#6495ed',
     borderRadius: 10,
-    padding: height * 0.02,
+    padding: height * 0.01,
     marginBottom: height * 0.03,
     fontSize: width * 0.04,
     color: '#333',
-    backgroundColor: '#f0f0f0',
+  },
+  phoneInputTextContainer: {
+    paddingVertical: 0,
   },
   button: {
     backgroundColor: '#6495ed',
@@ -81,11 +136,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  image: {
-    width: width,
-    height: width,
-    marginTop :height * 0.2,
   },
 });
 

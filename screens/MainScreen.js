@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,17 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import Bell from '../src/svg/Bell';
+import complaintPic from '../src/image/Classroom-bro.png';
+import feesPic from '../src/image/MoneyManage.png';
+import progressPic from '../src/image/Progress.png';
 
-const { width } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-const MainScreen = ({ navigation }) => {
+const MainScreen = ({navigation}) => {
   const [selectedChild, setSelectedChild] = useState('आर्या कुमार'); // Default selected child
   const [selectedChildInfo, setSelectedChildInfo] = useState(null);
   const [childrenList, setChildrenList] = useState([
@@ -23,9 +27,30 @@ const MainScreen = ({ navigation }) => {
 
   useEffect(() => {
     const childInfoList = {
-      'आर्या कुमार': { name: 'आर्या कुमार', school: 'कुमार इंटरनेशनल स्कूल', grade: '6', section: 'A', rollNumber: '101', attendance: '80%' },
-      'राज कुमार': { name: 'राज कुमार', school: 'संगमित्रा स्कूल', grade: '7', section: 'B', rollNumber: '102', attendance: '75%' },
-      'सोनिया देवी': { name: 'सोनिया देवी', school: 'शान्ति स्कूल', grade: '5', section: 'A', rollNumber: '103', attendance: '85%' },
+      'आर्या कुमार': {
+        name: 'आर्या कुमार',
+        school: 'कुमार इंटरनेशनल स्कूल',
+        grade: '6',
+        section: 'A',
+        rollNumber: '101',
+        attendance: '80%',
+      },
+      'राज कुमार': {
+        name: 'राज कुमार',
+        school: 'संगमित्रा स्कूल',
+        grade: '7',
+        section: 'B',
+        rollNumber: '102',
+        attendance: '75%',
+      },
+      'सोनिया देवी': {
+        name: 'सोनिया देवी',
+        school: 'शान्ति स्कूल',
+        grade: '5',
+        section: 'A',
+        rollNumber: '103',
+        attendance: '85%',
+      },
     };
     setSelectedChildInfo(childInfoList[selectedChild]);
   }, [selectedChild]);
@@ -51,7 +76,7 @@ const MainScreen = ({ navigation }) => {
       <View style={styles.headerContainer}>
         {childrenList.length > 1 && (
           <SelectDropdown
-            data={childrenList.map(child => ({ label: child }))}
+            data={childrenList.map(child => ({label: child}))}
             onSelect={item => setSelectedChild(item.label)}
             defaultButtonText={selectedChild}
             renderButton={(selectedItem, isOpened) => (
@@ -65,10 +90,15 @@ const MainScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={{
                   ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: '#D2D9DF' }),
-                  ...(item.label === 'अन्य बच्चा' && { opacity: 0.5, backgroundColor: '#f5f5f5' }),
+                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                  ...(item.label === 'अन्य बच्चा' && {
+                    opacity: 0.5,
+                    backgroundColor: '#f5f5f5',
+                  }),
                 }}
-                onPress={() => item.label !== 'अन्य बच्चा' && setSelectedChild(item.label)}>
+                onPress={() =>
+                  item.label !== 'अन्य बच्चा' && setSelectedChild(item.label)
+                }>
                 <Text style={styles.dropdownItemTxtStyle}>{item.label}</Text>
               </TouchableOpacity>
             )}
@@ -88,11 +118,15 @@ const MainScreen = ({ navigation }) => {
       {selectedChildInfo && (
         <View style={styles.childInfoContainer}>
           <Text style={styles.childInfo}>नाम: {selectedChildInfo.name}</Text>
-          <Text style={styles.childInfo}>स्कूल: {selectedChildInfo.school}</Text>
+          <Text style={styles.childInfo}>
+            स्कूल: {selectedChildInfo.school}
+          </Text>
           <Text style={styles.childInfo}>
             कक्षा: {selectedChildInfo.grade}-{selectedChildInfo.section}
           </Text>
-          <Text style={styles.childInfo}>रोल नंबर: {selectedChildInfo.rollNumber}</Text>
+          <Text style={styles.childInfo}>
+            रोल नंबर: {selectedChildInfo.rollNumber}
+          </Text>
         </View>
       )}
 
@@ -100,16 +134,19 @@ const MainScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[styles.box, styles.complaintBox]}
           onPress={goToComplaintScreen}>
+          <Image source={complaintPic} style={styles.boxImage} />
           <Text style={styles.boxText}>शिकायत</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.box, styles.feesBox]}
           onPress={goToFeesScreen}>
           <Text style={styles.boxText}>शुल्क & उपस्थिति</Text>
+          <Image source={feesPic} style={styles.boxImage} />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.box, styles.progressReport]}
           onPress={goToProgressReportScreen}>
+          <Image source={progressPic} style={styles.boxImage} />
           <Text style={styles.boxText}>प्रगति रिपोर्ट</Text>
         </TouchableOpacity>
       </View>
@@ -122,6 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: width * 0.05,
     paddingTop: width * 0.01,
+    backgroundColor: '#f7f8fa',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -138,16 +176,24 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.02,
     elevation: 2,
     backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: width * 0.02,
   },
   dropdownButtonStyle: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#6495ed', // Theme color for borders
+    borderColor: '#007bff', // Theme color for borders
     borderRadius: width * 0.02,
     padding: width * 0.03,
     backgroundColor: '#fff',
     width: '45%',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: width * 0.02,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
@@ -174,38 +220,60 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.04,
   },
   box: {
-    height: width * 0.3,
+    height: width * 0.4, // Increased height to accommodate images
     borderRadius: width * 0.02,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     elevation: 3,
-    marginBottom: width * 0.02,
+    marginBottom: width * 0.05,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: width * 0.02,
+    backgroundColor: '#fff', // Background color for box
+    paddingHorizontal: width * 0.03,
+    borderWidth: 2,
+  },
+  boxImage: {
+    width: '35%',
+    height: '70%',
+    resizeMode: 'contain',
   },
   feesBox: {
-    backgroundColor: '#6495ed',
+    borderColor: '#007bff',
   },
   complaintBox: {
-    backgroundColor: '#ff6347',
+    borderColor: '#dc3545',
   },
   progressReport: {
-    backgroundColor: '#004d00',
+    borderColor: '#28a745',
   },
   boxText: {
-    fontSize: width * 0.07,
+    fontSize: width * 0.06,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#007bff',
+    textAlign: 'center',
   },
   childInfoContainer: {
-    marginBottom: width * 0.02,
-    padding: width * 0.035,
+    marginBottom: width * 0.02, // Increased margin for better spacing
+    padding: width * 0.05, // More padding for better content spacing
     backgroundColor: '#ffffff',
     borderRadius: width * 0.02,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: width * 0.02,
+    borderWidth: 1,
+    borderColor: '#dcdcdc', // Light grey border for a professional look
   },
   childInfo: {
-    fontSize: width * 0.04,
-    marginBottom: width * 0.01,
+    fontSize: width * 0.045,
+    marginBottom: width * 0.01, // Increased margin for better spacing between lines
     color: '#333333',
+    fontWeight: '500',
+    lineHeight: width * 0.06, // Line height for better readability
   },
 });
 

@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
-const ProgressBar = ({ status }) => {
+const ProgressBar = ({status}) => {
+  const statusList = [
+    'समीक्षा के अंतर्गत',
+    'कक्षा शिक्षक द्वारा समीक्षा की गई',
+    'प्राचार्य द्वारा समीक्षा की गई',
+    'शिकायत का समाधान हो गया',
+  ];
+
   const getStatusLabel = () => {
     switch (status) {
       case 0:
@@ -37,19 +44,17 @@ const ProgressBar = ({ status }) => {
 
   const renderCircles = () => {
     const circles = [];
-
     for (let i = 0; i < 4; i++) {
       circles.push(
         <View
           key={i}
           style={[
             styles.circle,
-            { backgroundColor: getProgressColors()[i <= status ? 0 : 1] },
+            {backgroundColor: getProgressColors()[i <= status ? 0 : 1]},
           ]}
-        />
+        />,
       );
     }
-
     return circles;
   };
 
@@ -57,22 +62,31 @@ const ProgressBar = ({ status }) => {
     <View style={styles.progressBarContainer}>
       <LinearGradient
         colors={getProgressColors()}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.progressBackground}
-      >
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={styles.progressBackground}>
         {renderCircles()}
       </LinearGradient>
-      <Text style={styles.statusText}>{getStatusLabel()}</Text>
+      <View style={styles.labelContainer}>
+        {statusList.map((label, i) => (
+          <Text
+            key={i}
+            style={[
+              styles.statusText,
+              status >= i ? styles.activeLabelColor : null,
+            ]}>
+            {label}
+          </Text>
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   progressBarContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 8,
     width: '100%',
   },
@@ -80,21 +94,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 2,
     borderRadius: 5,
-    alignItems : "center",
+    alignItems: 'center',
     justifyContent: 'space-between',
-    width :"65%",
+    width: '100%',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: 10,
   },
   circle: {
     height: 12,
     width: 12,
-    borderRadius: 15,
+    borderRadius: 6,
   },
   statusText: {
     fontSize: width * 0.035,
-    color: '#6495ED',
     fontWeight: 'bold',
     textAlign: 'right',
     width: '30%',
+    textAlign: 'center',
+    paddingRight: 10,
+  },
+  activeLabelColor: {
+    color: '#6495ED',
   },
 });
 

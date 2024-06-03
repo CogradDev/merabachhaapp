@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import ProgressCircle from 'react-native-progress/Circle';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const FeesManagementScreen = () => {
   const totalFees = 5000;
@@ -9,42 +11,40 @@ const FeesManagementScreen = () => {
   const remainingBalance = totalFees - paidAmount;
   const attendancePercentage = 80; // Assuming attendance percentage
 
-  const handlePayment = () => {
-    console.log('Payment successful!');
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={[styles.heading, { color: '#6495ed', fontSize: width * 0.06 }]}>फीस प्रबंधन</Text>
+    <View colors={['#E9EDF0', '#C5D3DC']} style={styles.container}>
+      <Text style={styles.heading}>फीस प्रबंधन</Text>
 
-      <View style={styles.content}>
-        <View style={styles.box}>
-          <View style={styles.infoBox}>
-            <Text style={[styles.infoLabel, { fontSize: width * 0.04 }]}>कुल फीस:</Text>
-            <Text style={[styles.infoValue, { fontSize: width * 0.05 }]}>₹{totalFees}</Text>
-          </View>
+      <View style={styles.feesContainer}>
+        <Text style={styles.sectionHeading}>फीस</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>कुल फीस:</Text>
+          <Text style={styles.infoValue}>₹{totalFees}</Text>
         </View>
-        <View style={styles.box}>
-          <View style={styles.infoBox}>
-            <Text style={[styles.infoLabel, { fontSize: width * 0.04 }]}>चुकाई गई राशि:</Text>
-            <Text style={[styles.infoValue, { fontSize: width * 0.05 }]}>₹{paidAmount}</Text>
-          </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>चुकाई गई राशि:</Text>
+          <Text style={styles.infoValue}>₹{paidAmount}</Text>
         </View>
-        <View style={styles.box}>
-          <View style={styles.infoBox}>
-            <Text style={[styles.infoLabel, { fontSize: width * 0.04 }]}>शेष राशि:</Text>
-            <Text style={[styles.infoValue, { fontSize: width * 0.05 }]}>₹{remainingBalance}</Text>
-          </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>शेष राशि:</Text>
+          <Text style={styles.infoValue}>₹{remainingBalance}</Text>
         </View>
-        <View>
-          <Text style={[styles.heading, styles.attendanceHeading]}>उपस्थिति</Text>
-        </View>
-        <View style={styles.attendanceBox}>
-          <View style={styles.infoBox}>
-            <Text style={[styles.infoLabel, styles.attendanceLabel]}>उपस्थिति:</Text>
-            <Text style={[styles.infoValue, styles.attendanceValue]}>{attendancePercentage}%</Text>
-          </View>
-        </View>
+      </View>
+
+      <View style={styles.attendanceContainer}>
+        <Text style={styles.attendanceHeading}>उपस्थिति</Text>
+        <ProgressCircle
+          size={width * 0.6}
+          indeterminate={false}
+          progress={attendancePercentage / 100}
+          borderWidth={8}
+          color="#6495ed"
+          unfilledColor="#E3E8EC"
+          thickness={20}
+          showsText
+          formatText={() => `${attendancePercentage}%`}
+          textStyle={styles.progressText}
+        />
       </View>
     </View>
   );
@@ -53,74 +53,65 @@ const FeesManagementScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    paddingVertical : height * 0.02,
     backgroundColor: '#fff',
-    paddingHorizontal: width * 0.05,
-    paddingVertical: width * 0.05,
   },
   heading: {
-    fontWeight: 'bold',
-    textAlign: 'center',  
-    marginBottom: width * 0.07,
 
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-start',
-  },
-  box: {
-    backgroundColor: '#f9f9f9',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: width * 0.02,
-    padding: width * 0.1,
-    marginBottom: width * 0.05,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-  },
-  attendanceBox: {
-    backgroundColor: '#ff7f50', // Coral color
-    borderRadius: width * 0.02,
-    padding: width * 0.1,
-    marginBottom: width * 0.05,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-  },
-  infoBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: width * 0.02,
-  },
-  infoLabel: {
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  infoValue: {
+    marginBottom: height * 0.05,
+
+    fontSize: width * 0.06,
     fontWeight: 'bold',
     color: '#6495ed',
+  },
+  feesContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: width * 0.05,
+    paddingHorizontal: width * 0.08,
+    paddingVertical: height * 0.05,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    marginBottom: height * 0.04,
+    width: '80%',
+  },
+  sectionHeading: {
+    fontSize: width * 0.06,
+    // color: '#35424A',
+    marginBottom: height * 0.02,
+    fontWeight: 'bold',
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: height * 0.015,
+  },
+  infoLabel: {
+    color: '#35424A',
+    fontSize: width * 0.045,
+  },
+  infoValue: {
+    color: '#6495ed',
+    fontSize: width * 0.065,
+    fontWeight: 'bold',
+  },
+  attendanceContainer: {
+    alignItems: 'center',
   },
   attendanceHeading: {
     fontSize: width * 0.06,
-    color: '#6495ed',
-    marginBottom: width * 0.05,
-    textAlign: 'center',
+    // color: '#35424A',
+    marginTop: height * 0.05,
+    marginBottom: height * 0.02,
     fontWeight: 'bold',
-    textAlign: 'center',  
-    marginTop: width * 0.05,
   },
-  attendanceLabel: {
-    fontSize: width * 0.04,
-    color: '#fff', // White color for attendance label
-  },
-  attendanceValue: {
-    fontSize: width * 0.05,
-    color: '#fff', // White color for attendance value
+  progressText: {
+    color: '#6495ed',
+    fontSize: width * 0.1,
+    fontWeight: 'bold',
   },
 });
 

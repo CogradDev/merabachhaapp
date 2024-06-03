@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
 
@@ -25,7 +24,6 @@ const ProgressReportScreen = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <Text style={styles.heading}>प्रगति रिपोर्ट</Text>
       </View>
-      {/* <Text style={styles.sectionTitle}>विषयों में प्रगति:</Text> */}
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <Text style={[styles.tableCell, styles.headerText]}>विषय</Text>
@@ -47,36 +45,33 @@ const ProgressReportScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: width * 0.05,
-    paddingTop: width * 0.05,
-    backgroundColor: '#fff',
+    backgroundColor: '#F7F9FC',
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: width * 0.05,
+    paddingTop: width * 0.08,
+    paddingBottom: width * 0.05,
   },
   heading: {
+    marginBottom: width * 0.04,
     fontSize: width * 0.06,
     fontWeight: 'bold',
     color: '#6495ed',
   },
-  sectionTitle: {
-    fontSize: width * 0.06,
-    fontWeight: 'bold',
-    marginBottom: width * 0.02,
-  },
   table: {
     borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: width * 0.02,
-    backgroundColor: '#fff',
-    marginBottom: width * 0.04,
+    borderColor: '#D6E4EF',
+    borderRadius: width * 0.04,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: width * 0.05,
+    marginBottom: width * 0.1,
+    elevation: 3,
   },
   tableRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-    paddingVertical: width * 0.025,
+    borderBottomColor: '#D6E4EF',
+    paddingVertical: width * 0.03,
   },
   tableCell: {
     flex: 1,
@@ -84,12 +79,13 @@ const styles = StyleSheet.create({
     paddingVertical: width * 0.02,
     paddingHorizontal: width * 0.03,
     color: '#333333',
-    fontSize: width * 0.04,
+    fontSize: width * 0.048,
   },
   headerText: {
     fontWeight: 'bold',
-    backgroundColor: '#6495ed',
-    color: '#fff',
+    backgroundColor: '#2E75D0',
+    color: '#FFFFFF',
+    fontSize: width * 0.05,
   },
 });
 
