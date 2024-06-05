@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ProgressCircle from 'react-native-progress/Circle';
 
 const { width, height } = Dimensions.get('window');
 
-const FeesManagementScreen = () => {
+const FeesManagementScreen = ({ route }) => {
+  const parentId = route.params?.parentId;
+  const studentId = route.params?.studentId;
   const totalFees = 5000;
   const paidAmount = 3000;
-  const remainingBalance = totalFees - paidAmount;
-  const attendancePercentage = 80; // Assuming attendance percentage
+  const remainingBalance = totalFees - paidAmount;  
+  const [feesData, setFeesData] = useState(null);
+  const [attendancePercentage, setAttendancePercentage] = useState(10);
+
+
+  // Function to fetch fees details and attendance info from backend
+  const fetchData = async () => {
+    const feesUrl = apiList.fees(parentId);
+    const attendanceUrl = apiList.attendance(studentId);
+
+    try {
+      const feesResponse = await fetch(feesUrl);
+      const feesData = await feesResponse.json();
+      setFeesData(feesData);
+
+      const attendanceResponse = await fetch(attendanceUrl);
+      const attendanceData = await attendanceResponse.json();
+      setAttendancePercentage(attendanceData.attendancePercentage);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    //fetchData(); 
+  }, []);
 
   return (
     <View colors={['#E9EDF0', '#C5D3DC']} style={styles.container}>

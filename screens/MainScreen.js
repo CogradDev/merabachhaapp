@@ -55,20 +55,47 @@ const MainScreen = ({navigation}) => {
     setSelectedChildInfo(childInfoList[selectedChild]);
   }, [selectedChild]);
 
+  const fetchChildrenList = async () => {
+    try {
+      const response = await fetch(apiList.getChilds(parentId)); // Replace 'yourParentId' with the actual parent ID
+      const data = await response.json();
+      if (data.success) {
+        setChildrenList(data.children);
+        setSelectedChild(data.children[0].name);
+      } else {
+        alert('बच्चों की सूची लाने में असमर्थ।');
+      }
+    } catch (error) {
+      console.error('Error fetching children list:', error);
+      alert('एक त्रुटि पाई गई। कृपया बाद में पुन: प्रयास करें।');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goToFeesScreen = () => {
-    navigation.navigate('fees');
+    navigation.navigate('fees', {
+      parentId: 1234,
+      studentId: 1234,
+    });
   };
 
   const goToComplaintScreen = () => {
-    navigation.navigate('complaint');
+    navigation.navigate('complaint', {
+      studentId: 1234,
+      parentId: 1234,
+      schoolId: 1234,
+    });
   };
 
   const goToProgressReportScreen = () => {
-    navigation.navigate('progress');
+    navigation.navigate('progress', {
+      studentId: 1234,
+    });
   };
 
   const handleNotificationPress = () => {
-    navigation.navigate('Notification');
+    navigation.navigate('Notification', {parentId: 1234});
   };
 
   return (

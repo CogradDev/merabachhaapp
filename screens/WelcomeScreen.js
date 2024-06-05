@@ -1,9 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({navigation}) => {
   const handleGetStarted = () => {
     navigation.navigate('LoginScreen');
   };
@@ -47,10 +54,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
-    justifyContent : "space-between",
-    paddingVertical :   height * 0.06,
-    top: height * 0.05,  
-    height : height* 0.4,
+    justifyContent: 'space-between',
+    paddingVertical: height * 0.06,
+    top: height * 0.05,
+    height: height * 0.4,
   },
   title: {
     fontSize: width * 0.08,
@@ -64,7 +71,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: width ,
+    width: width,
     height: width * 0.9,
   },
   button: {

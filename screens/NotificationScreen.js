@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import apiList from '../api/apiList';
 
 const { width } = Dimensions.get('window');
 
-const NotificationScreen = () => {
+const NotificationScreen = ({route}) => {
+  const parentId = route.params?.parentId;
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'शिक्षक से नया संदेश', message: 'आपके शिक्षक से एक नया संदेश मिला है।', read: false },
     { id: 2, title: 'असाइनमेंट रिमाइंडर', message: 'रिमाइंडर: अपना विज्ञान प्रोजेक्ट शुक्रवार तक सबमिट करें।', read: true },
@@ -12,6 +14,27 @@ const NotificationScreen = () => {
     { id: 5, title: 'स्थानीय खेल क्षेत्र समाचार', message: 'स्थानीय खेल क्षेत्र में नवीनतम खबरें जानने के लिए जरूर देखें।', read: true },
     // Add more notifications as needed
   ]);
+
+
+
+  // Function to fetch notifications data from backend
+  const fetchNotifications = async () => {
+    const notificationsUrl = apiList.getNotifications(parentId);
+
+    try {
+      // Fetch notifications data
+      const response = await fetch(notificationsUrl);
+      const data = await response.json();
+      setNotifications(data.notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  useEffect(() => {
+    //fetchNotifications(); 
+  }, []);
+
 
   const markAsRead = id => {
     const updatedNotifications = notifications.map(notification =>

@@ -23,10 +23,16 @@ import {
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import ProgressBar from '../Components/ProgressBar';
+import apiList from '../api/apiList';
 
 const {width} = Dimensions.get('window');
 
-const ComplaintsScreen = () => {
+const ComplaintsScreen = ({route}) => {
+  
+  const studentId = route.params?.studentId;
+  const parentId = route.params?.parentId;
+  const schoolId = route.params?.schoolId;
+
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -182,6 +188,52 @@ const ComplaintsScreen = () => {
     setAudioPath('');
   };
 
+  // const submitComplaint = async () => {
+  //   const studentName = 'आर्या कुमार'; // Replace with actual student name
+  //   const complaintNumber = 123; // Replace with actual complaint number
+  //   const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
+    
+  //   // Send the complaint to the backend
+  //   const requestBody = {
+  //     role: 'parent',
+  //     studentId: studentId, // Replace with the actual student ID
+  //     parentId: parentId, // Replace with the actual parent ID
+  //     schoolId: schoolId, // Replace with the actual school ID
+  //     audio: fileName,
+  //   };
+
+  //   try {
+  //     const response = await fetch(apiList.sendComplaint, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(requestBody),
+  //     });
+
+  //     if (response.ok) {
+  //       const newComplaint = {
+  //         id: recordings.length + 1,
+  //         name: studentName + '-शिकायत-' + complaintNumber,
+  //         audio: fileName,
+  //         path: audioPath,
+  //         status: complaintStatus,
+  //         date: formatDate(Date.now()),
+  //       };
+  //       setRecordings([newComplaint, ...recordings]);
+  //       setSubmittedFileName(fileName); // Set the submitted file name directly
+  //       setModalVisible(false);
+  //       setAudioPath('');
+  //     } else {
+  //       console.error('Failed to submit complaint:', response.statusText);
+  //       // Handle error scenario
+  //     }
+  //   } catch (error) {
+  //     console.error('Error submitting complaint:', error);
+  //     // Handle error scenario
+  //   }
+  // };
+
   // Function to cancel recording
   const cancelRecording = async () => {
     try {
@@ -195,6 +247,28 @@ const ComplaintsScreen = () => {
       console.log('Error canceling recording:', error);
     }
   };
+
+
+   // Function to retrieve complaints raised by the parent
+   const fetchComplaints = async () => {
+    try {
+      const response = await fetch(apiList.getComplaints(parentId));
+      if (response.ok) {
+        const data = await response.json();
+        setRecordings(data.complaints);
+      } else {
+        console.error('Failed to fetch complaints:', response.statusText);
+        // Handle error scenario
+      }
+    } catch (error) {
+      console.error('Error fetching complaints:', error);
+      // Handle error scenario
+    }
+  };
+
+  useEffect(() => {
+    //fetchComplaints();
+  }, []);
 
   // Function to render each recording item in the list
   const renderRecordingItem = ({item}) => (

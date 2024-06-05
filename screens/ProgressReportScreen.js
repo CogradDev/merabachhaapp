@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import apiList from '../api/apiList';
 
 const { width } = Dimensions.get('window');
 
-const ProgressReportScreen = ({ navigation }) => {
+const ProgressReportScreen = ({ route }) => {
+  const studentId = route.params?.studentId; 
   const subjects = [
     { name: 'गणित', grade: 'A', feedback: 'अवधारणाओं की अच्छी समझ.' },
     { name: 'विज्ञान', grade: 'B', feedback: 'प्रयोगों में सुधार की जरूरत है.' },
@@ -18,6 +20,26 @@ const ProgressReportScreen = ({ navigation }) => {
     { name: 'अंग्रेज़ी', grade: 'B-', feedback: 'व्याकरण और शब्दावली पर ध्यान दें.' },
     { name: 'कला', grade: 'A', feedback: 'रचनात्मक और अभिव्यंजक कलाकृति.' },
   ];
+
+  const [progressReport, setProgressReport] = useState([]);
+
+   // Function to fetch progress report data from backend
+   const fetchProgressReport = async () => {
+    const progressReportUrl = apiList.progressReport(studentId);
+
+    try {
+      // Fetch progress report data
+      const response = await fetch(progressReportUrl);
+      const data = await response.json();
+      setProgressReport(data.progress);
+    } catch (error) {
+      console.error('Error fetching progress report:', error);
+    }
+  };
+
+  useEffect(() => {
+    //fetchProgressReport(); 
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
