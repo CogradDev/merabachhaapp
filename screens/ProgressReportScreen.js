@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Dimensions,
 } from 'react-native';
 import apiList from '../api/apiList';
@@ -12,33 +11,34 @@ import apiList from '../api/apiList';
 const { width } = Dimensions.get('window');
 
 const ProgressReportScreen = ({ route }) => {
-  const studentId = route.params?.studentId; 
-  const subjects = [
-    { name: 'गणित', grade: 'A', feedback: 'अवधारणाओं की अच्छी समझ.' },
-    { name: 'विज्ञान', grade: 'B', feedback: 'प्रयोगों में सुधार की जरूरत है.' },
-    { name: 'इतिहास', grade: 'A+', feedback: 'क्विज़ में उत्कृष्ट प्रदर्शन.' },
-    { name: 'अंग्रेज़ी', grade: 'B-', feedback: 'व्याकरण और शब्दावली पर ध्यान दें.' },
-    { name: 'कला', grade: 'A', feedback: 'रचनात्मक और अभिव्यंजक कलाकृति.' },
-  ];
-
+  const studentId = route.params?.studentId;
   const [progressReport, setProgressReport] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-   // Function to fetch progress report data from backend
-   const fetchProgressReport = async () => {
+  // Function to fetch progress report data from backend
+  const fetchProgressReport = async () => {
     const progressReportUrl = apiList.progressReport(studentId);
 
     try {
       // Fetch progress report data
       const response = await fetch(progressReportUrl);
       const data = await response.json();
-      setProgressReport(data.progress);
+      if (data && data.exams && data.exams.length > 0) {
+        setProgressReport(data.exams[0].subjects);
+      } else {
+        setProgressReport([]);
+      }
     } catch (error) {
       console.error('Error fetching progress report:', error);
+      setError('Error fetching progress report.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    //fetchProgressReport(); 
+    fetchProgressReport();
   }, []);
 
   return (
@@ -49,16 +49,24 @@ const ProgressReportScreen = ({ route }) => {
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <Text style={[styles.tableCell, styles.headerText]}>विषय</Text>
-          <Text style={[styles.tableCell, styles.headerText]}>ग्रेड</Text>
-          <Text style={[styles.tableCell, styles.headerText]}>सुझाव</Text>
+          <Text style={[styles.tableCell, styles.headerText]}>प्राप्त अंक</Text>
+          <Text style={[styles.tableCell, styles.headerText]}>कुल अंक</Text>
         </View>
-        {subjects.map((subject, index) => (
-          <TouchableOpacity key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{subject.name}</Text>
-            <Text style={styles.tableCell}>{subject.grade}</Text>
-            <Text style={styles.tableCell}>{subject.feedback}</Text>
-          </TouchableOpacity>
-        ))}
+        {isLoading ? (
+          <Text style={styles.loadingText}>Loading...</Text>
+        ) : error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : progressReport.length > 0 ? (
+          progressReport.map((subject, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{subject.subjectName}</Text>
+              <Text style={styles.tableCell}>{subject.marksObtain}</Text>
+              <Text style={styles.tableCell}>{subject.totalMarks}</Text>
+            </View>
+          ))
+        ) : (
+          <Text style={styles.noDataText}>कोई प्रगति रिपोर्ट उपलब्ध नहीं है.</Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -108,6 +116,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#2E75D0',
     color: '#FFFFFF',
     fontSize: width * 0.05,
+  },
+  loadingText: {
+    textAlign: 'center',
+    paddingVertical: width * 0.05,
+    fontSize: width * 0.05,
+    color: '#333333',
+  },
+  errorText: {
+    textAlign: 'center',
+    paddingVertical: width * 0.05,
+    fontSize: width * 0.05,
+    color: '#FF0000',
+  },
+  noDataText: {
+    textAlign: 'center',
+    paddingVertical: width * 0.05,
+    fontSize: width * 0.05,
+    color: '#333333',
   },
 });
 

@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, PermissionsAndroid, Dimension
 
 const { width } = Dimensions.get('window');
 
-const PermissionScreen = ({ navigation }) => {
+const PermissionScreen = ({ navigation, route }) => {
+  const parentData = route.params?.parentData;
   const [permissionsStatus, setPermissionsStatus] = useState({});
 
   const handlePermissionRequest = async () => {
@@ -21,7 +22,7 @@ const PermissionScreen = ({ navigation }) => {
       if (
         Object.values(granted).every(status => status === PermissionsAndroid.RESULTS.GRANTED)
       ) {
-        navigation.navigate('Main');
+        navigation.navigate('Main', {parentData : parentData});
       } else {
         alert('कृपया सभी आवश्यक अनुमतियां देने के लिए स्वीकृति दें।');
       }

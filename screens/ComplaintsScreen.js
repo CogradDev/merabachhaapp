@@ -8,6 +8,7 @@ import {
   Dimensions,
   FlatList,
   PermissionsAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import MicroPhoneAlt from '../src/svg/MicroPhoneAlt';
 import Stop from '../src/svg/Stop';
@@ -28,11 +29,9 @@ import apiList from '../api/apiList';
 const {width} = Dimensions.get('window');
 
 const ComplaintsScreen = ({route}) => {
-  
-  const studentId = route.params?.studentId;
+  const student = route.params?.student;
   const parentId = route.params?.parentId;
-  const schoolId = route.params?.schoolId;
-
+  let complaintNumber;
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -41,6 +40,8 @@ const ComplaintsScreen = ({route}) => {
   const [complaintStatus, setComplaintStatus] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [submittedFileName, setSubmittedFileName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Initialize audioRecorderPlayer using useRef
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer());
@@ -79,22 +80,26 @@ const ComplaintsScreen = ({route}) => {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    return `${studentName}-complaint${complaintNumber}-${year}${month}${day}-${hours}${minutes}${seconds}.aac`;
+    return `${studentName}-complaint${complaintNumber}-${year}${month}${day}-${hours}${minutes}${seconds}.mp3`;
   };
 
   // Function to start recording audio
   const startRecording = async () => {
-    const studentName = 'आर्या कुमार'; // Replace with actual student name
-    const complaintNumber = 123; // Replace with actual complaint number
-    const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
+    const studentName = student.name;
+    if (recordings && recordings.length > 0) {
+      complaintNumber = recordings.length + 1;
+    } else {
+      complaintNumber = 1;
+    }
+    const fileName = generateAudioName(studentName, complaintNumber) + '.mp3';
     const filePath = RNFS.DocumentDirectoryPath + '/' + fileName;
     const audioSet = {
-      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+      AudioEncoderAndroid: AudioEncoderAndroidType.MP3,
       AudioSourceAndroid: AudioSourceAndroidType.MIC,
       AVModeIOS: AVModeIOSOption.measurement,
       AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
       AVNumberOfChannelsKeyIOS: 2,
-      AVFormatIDKeyIOS: AVEncodingOption.aac,
+      AVFormatIDKeyIOS: AVEncodingOption.mp3,
     };
 
     try {
@@ -168,71 +173,55 @@ const ComplaintsScreen = ({route}) => {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   };
 
-  // Function to submit a complaint
-  const submitComplaint = () => {
-    const studentName = 'आर्या कुमार'; // Replace with actual student name
-    const complaintNumber = 123; // Replace with actual complaint number
-    const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
+  const submitComplaint = async () => {
+    const studentName = student.name;
+    if (recordings && recordings.length > 0) {
+      complaintNumber = recordings.length + 1;
+    } else {
+      complaintNumber = 1;
+    }
+    const fileName = generateAudioName(studentName, complaintNumber);
 
-    const newComplaint = {
-      id: recordings.length + 1,
-      name: studentName + '-शिकायत-' + complaintNumber,
-      audio: fileName,
-      path: audioPath,
-      status: complaintStatus,
-      date: formatDate(Date.now()),
-    };
-    setRecordings([newComplaint, ...recordings]);
-    setSubmittedFileName(fileName); // Set the submitted file name directly
-    setModalVisible(false);
-    setAudioPath('');
+    // Create FormData object to send the complaint
+    const formData = new FormData();
+    formData.append('role', 'PARENT');
+    formData.append('message', studentName);
+    formData.append('studentId', student.studentId);
+    formData.append('id', parentId);
+    formData.append('schoolId', student.schoolId);
+    formData.append('audio', {
+      uri: audioPath,
+      type: 'audio/mp3',
+      name: fileName,
+    });
+
+    try {
+      setIsSubmitting(true); // Show loader while submitting
+      const response = await fetch(apiList.sendComplaint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        setModalVisible(false);
+        setAudioPath('');
+        fetchComplaints(); // Fetch complaints after submitting a new one
+      } else {
+        const errorData = await response.json();
+        console.error(
+          'Failed to submit complaint:',
+          errorData.message || response.statusText,
+        );
+      }
+    } catch (error) {
+      console.error('Error submitting complaint:', error);
+    } finally {
+      setIsSubmitting(false); // Hide loader after submission
+    }
   };
-
-  // const submitComplaint = async () => {
-  //   const studentName = 'आर्या कुमार'; // Replace with actual student name
-  //   const complaintNumber = 123; // Replace with actual complaint number
-  //   const fileName = generateAudioName(studentName, complaintNumber) + '.aac';
-    
-  //   // Send the complaint to the backend
-  //   const requestBody = {
-  //     role: 'parent',
-  //     studentId: studentId, // Replace with the actual student ID
-  //     parentId: parentId, // Replace with the actual parent ID
-  //     schoolId: schoolId, // Replace with the actual school ID
-  //     audio: fileName,
-  //   };
-
-  //   try {
-  //     const response = await fetch(apiList.sendComplaint, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(requestBody),
-  //     });
-
-  //     if (response.ok) {
-  //       const newComplaint = {
-  //         id: recordings.length + 1,
-  //         name: studentName + '-शिकायत-' + complaintNumber,
-  //         audio: fileName,
-  //         path: audioPath,
-  //         status: complaintStatus,
-  //         date: formatDate(Date.now()),
-  //       };
-  //       setRecordings([newComplaint, ...recordings]);
-  //       setSubmittedFileName(fileName); // Set the submitted file name directly
-  //       setModalVisible(false);
-  //       setAudioPath('');
-  //     } else {
-  //       console.error('Failed to submit complaint:', response.statusText);
-  //       // Handle error scenario
-  //     }
-  //   } catch (error) {
-  //     console.error('Error submitting complaint:', error);
-  //     // Handle error scenario
-  //   }
-  // };
 
   // Function to cancel recording
   const cancelRecording = async () => {
@@ -248,39 +237,40 @@ const ComplaintsScreen = ({route}) => {
     }
   };
 
-
-   // Function to retrieve complaints raised by the parent
-   const fetchComplaints = async () => {
+  // Function to retrieve complaints raised by the parent
+  const fetchComplaints = async () => {
+    setIsLoading(true); // Show loader while fetching complaints
     try {
       const response = await fetch(apiList.getComplaints(parentId));
       if (response.ok) {
         const data = await response.json();
-        setRecordings(data.complaints);
+        const sortedData = data.sort((a, b) => b.date - a.date);
+        setRecordings(sortedData);
       } else {
         console.error('Failed to fetch complaints:', response.statusText);
-        // Handle error scenario
       }
     } catch (error) {
       console.error('Error fetching complaints:', error);
-      // Handle error scenario
+    } finally {
+      setIsLoading(false); // Hide loader after fetching complaints
     }
   };
 
   useEffect(() => {
-    //fetchComplaints();
+    fetchComplaints();
   }, []);
 
   // Function to render each recording item in the list
   const renderRecordingItem = ({item}) => (
     <TouchableOpacity
       style={styles.recordingItem}
-      onPress={() => playAudio(item.path)}>
+      onPress={() => playAudio(item.audio)}>
       <View style={styles.recordingDetails}>
-        <Text style={styles.recordingName}>{item.name}</Text>
-        <Text style={styles.recordingDate}>{item.date}</Text>
+        <Text style={styles.recordingName}>{item.message + `-शिकायत`}</Text>
+        <Text style={styles.recordingDate}>{formatDate(item.date)}</Text>
       </View>
       <View style={styles.statusContainer}>
-        <ProgressBar status={item.status} />
+        <ProgressBar statusText={item.status} />
       </View>
     </TouchableOpacity>
   );
@@ -319,6 +309,7 @@ const ComplaintsScreen = ({route}) => {
               <Play size={width * 0.08} color="black" />
             )}
           </TouchableOpacity>
+          {isSubmitting}
           <View style={styles.audioControls}>
             <TouchableOpacity onPress={cancelRecording}>
               <Text style={styles.controlText}>रद्द करे</Text>
@@ -330,17 +321,23 @@ const ComplaintsScreen = ({route}) => {
         </View>
       )}
 
-      {recordings.length > 0 && (
-        <View style={styles.subHeadingContainer}>
-          <Text style={styles.subHeading}>दर्ज की हुई शिकायते</Text>
-        </View>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#6495ed" />
+      ) : (
+        recordings &&
+        recordings.length > 0 && (
+          <>
+            <View style={styles.subHeadingContainer}>
+              <Text style={styles.subHeading}>दर्ज की हुई शिकायते</Text>
+            </View>
+            <FlatList
+              data={recordings}
+              renderItem={renderRecordingItem}
+              keyExtractor={item => item._id}
+            />
+          </>
+        )
       )}
-
-      <FlatList
-        data={recordings}
-        renderItem={renderRecordingItem}
-        keyExtractor={item => item.id.toString()}
-      />
     </View>
   );
 };
@@ -359,7 +356,6 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.05,
     color: '#6495ed',
   },
-
   subHeadingContainer: {
     width: '100%',
     borderBottomWidth: 1,
@@ -385,7 +381,6 @@ const styles = StyleSheet.create({
   activeButton: {
     backgroundColor: '#FF5733',
   },
-
   buttonText: {
     fontSize: width * 0.04,
     fontWeight: 'bold',
@@ -393,7 +388,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: width * 0.35,
   },
-
   playbackContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -442,7 +436,6 @@ const styles = StyleSheet.create({
     elevation: 6,
     width: width * 0.9,
   },
-
   recordingDetails: {
     flex: 1,
     flexDirection: 'row',
@@ -459,6 +452,9 @@ const styles = StyleSheet.create({
   recordingDate: {
     fontSize: width * 0.03,
     color: '#666666',
+  },
+  statusContainer: {
+    marginTop: width * 0.03,
   },
 });
 

@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import ProgressCircle from 'react-native-progress/Circle';
+import apiList from '../api/apiList';
 
 const { width, height } = Dimensions.get('window');
 
 const FeesManagementScreen = ({ route }) => {
   const parentId = route.params?.parentId;
   const studentId = route.params?.studentId;
-  const totalFees = 5000;
-  const paidAmount = 3000;
-  const remainingBalance = totalFees - paidAmount;  
-  const [feesData, setFeesData] = useState(null);
-  const [attendancePercentage, setAttendancePercentage] = useState(10);
-
+  const [feesData, setFeesData] = useState({ totalFees: 0, paidAmount: 0, remainingAmount: 0 });
+  const [attendancePercentage, setAttendancePercentage] = useState(0);
+  const [totalClasses, setTotalClasses] = useState(0);
+  const [attendedClasses, setAttendedClasses] = useState(0);
 
   // Function to fetch fees details and attendance info from backend
   const fetchData = async () => {
@@ -23,18 +21,37 @@ const FeesManagementScreen = ({ route }) => {
     try {
       const feesResponse = await fetch(feesUrl);
       const feesData = await feesResponse.json();
-      setFeesData(feesData);
+      setFeesData({
+        totalFees: feesData.totalFees,
+        paidAmount: feesData.totalPaidAmount,
+        remainingAmount: feesData.remainingAmount,
+      });
 
       const attendanceResponse = await fetch(attendanceUrl);
       const attendanceData = await attendanceResponse.json();
-      setAttendancePercentage(attendanceData.attendancePercentage);
+
+      if (attendanceData.attendance && attendanceData.attendance.length > 0) {
+        const totalDays = attendanceData.attendance.length;
+        const presentDays = attendanceData.attendance.filter(att => att.status === 'p').length;
+        const attendancePercentage = (presentDays / totalDays) * 100;
+        setAttendancePercentage(attendancePercentage);
+        setTotalClasses(totalDays);
+        setAttendedClasses(presentDays);
+      } else {
+        setAttendancePercentage(0);
+        setTotalClasses(0);
+        setAttendedClasses(0);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
+      setAttendancePercentage(0);
+      setTotalClasses(0);
+      setAttendedClasses(0);
     }
   };
 
   useEffect(() => {
-    //fetchData(); 
+    fetchData();
   }, []);
 
   return (
@@ -45,20 +62,22 @@ const FeesManagementScreen = ({ route }) => {
         <Text style={styles.sectionHeading}>फीस</Text>
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>कुल फीस:</Text>
-          <Text style={styles.infoValue}>₹{totalFees}</Text>
+          <Text style={styles.infoValue}>₹{feesData.totalFees}</Text>
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>चुकाई गई राशि:</Text>
-          <Text style={styles.infoValue}>₹{paidAmount}</Text>
+          <Text style={styles.infoValue}>₹{feesData.paidAmount}</Text>
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>शेष राशि:</Text>
-          <Text style={styles.infoValue}>₹{remainingBalance}</Text>
+          <Text style={styles.infoValue}>₹{feesData.remainingAmount}</Text>
         </View>
       </View>
 
       <View style={styles.attendanceContainer}>
         <Text style={styles.attendanceHeading}>उपस्थिति</Text>
+        <Text style={styles.infoLabel}>कुल कक्षाएं: {totalClasses}</Text>
+        <Text style={styles.infoLabel}>उपस्थित कक्षाएं: {attendedClasses}</Text>
         <ProgressCircle
           size={width * 0.6}
           indeterminate={false}
@@ -68,7 +87,7 @@ const FeesManagementScreen = ({ route }) => {
           unfilledColor="#E3E8EC"
           thickness={20}
           showsText
-          formatText={() => `${attendancePercentage}%`}
+          formatText={() => `${attendancePercentage.toFixed(2)}%`}
           textStyle={styles.progressText}
         />
       </View>
@@ -80,13 +99,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical : height * 0.02,
+    paddingVertical: height * 0.02,
     backgroundColor: '#fff',
   },
   heading: {
-
     marginBottom: height * 0.05,
-
     fontSize: width * 0.06,
     fontWeight: 'bold',
     color: '#6495ed',
@@ -106,9 +123,9 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     fontSize: width * 0.06,
-    // color: '#35424A',
     marginBottom: height * 0.02,
     fontWeight: 'bold',
+    color: '#35424A',
   },
   infoContainer: {
     flexDirection: 'row',
@@ -126,13 +143,18 @@ const styles = StyleSheet.create({
   },
   attendanceContainer: {
     alignItems: 'center',
+    marginTop: height * 0.05,
   },
   attendanceHeading: {
     fontSize: width * 0.06,
-    // color: '#35424A',
-    marginTop: height * 0.05,
     marginBottom: height * 0.02,
     fontWeight: 'bold',
+    color: '#35424A',
+  },
+  totalClassesText: {
+    color: '#35424A',
+    fontSize: width * 0.05,
+    marginBottom: height * 0.02,
   },
   progressText: {
     color: '#6495ed',
@@ -140,5 +162,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
 export default FeesManagementScreen;

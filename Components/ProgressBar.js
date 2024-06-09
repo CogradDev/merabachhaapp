@@ -1,16 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const {width} = Dimensions.get('window');
 
-const ProgressBar = ({status}) => {
+const ProgressBar = ({statusText}) => {
+  //const [status, setStatus] = useState(0);
+  let status = 0;
   const statusList = [
     'समीक्षा के अंतर्गत',
     'कक्षा शिक्षक द्वारा समीक्षा की गई',
     'प्राचार्य द्वारा समीक्षा की गई',
     'शिकायत का समाधान हो गया',
   ];
+
+  if (statusText === 'UNRESOLVED') {
+    status = 0;
+  } else {
+    status = 1;
+  }
 
   const getStatusLabel = () => {
     switch (status) {
