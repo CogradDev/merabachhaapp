@@ -244,6 +244,7 @@ const ComplaintsScreen = ({route}) => {
       const response = await fetch(apiList.getComplaints(parentId));
       if (response.ok) {
         const data = await response.json();
+        console.log(data)
         const sortedData = data.sort((a, b) => b.date - a.date);
         setRecordings(sortedData);
       } else {

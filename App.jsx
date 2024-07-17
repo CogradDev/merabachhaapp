@@ -20,6 +20,11 @@ const App = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
+        if (__DEV__) {
+          setInitialRoute('Welcome');
+          return;
+        }
+
         const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
         const email = await AsyncStorage.getItem('email');
         const password = await AsyncStorage.getItem('password');

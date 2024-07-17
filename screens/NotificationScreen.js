@@ -4,41 +4,33 @@ import apiList from '../api/apiList';
 
 const { width } = Dimensions.get('window');
 
-const NotificationScreen = ({route}) => {
+const NotificationScreen = ({ route }) => {
   const parentId = route.params?.parentId;
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'शिक्षक से नया संदेश', message: 'आपके शिक्षक से एक नया संदेश मिला है।', read: false },
-    { id: 2, title: 'असाइनमेंट रिमाइंडर', message: 'रिमाइंडर: अपना विज्ञान प्रोजेक्ट शुक्रवार तक सबमिट करें।', read: true },
-    { id: 3, title: 'आगामी कार्यक्रम', message: 'आगामी कार्यक्रम के बारे में न भूलें: स्कूल सभा अगले हफ्ते!', read: false },
-    { id: 4, title: 'अंतर्राष्ट्रीय परिपत्र', message: 'आज आपके लिए एक नया अंतर्राष्ट्रीय परिपत्र है।', read: false },
-    { id: 5, title: 'स्थानीय खेल क्षेत्र समाचार', message: 'स्थानीय खेल क्षेत्र में नवीनतम खबरें जानने के लिए जरूर देखें।', read: true },
-    // Add more notifications as needed
-  ]);
-
-
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Function to fetch notifications data from backend
   const fetchNotifications = async () => {
     const notificationsUrl = apiList.getNotifications(parentId);
 
     try {
-      // Fetch notifications data
       const response = await fetch(notificationsUrl);
       const data = await response.json();
-      setNotifications(data.notifications);
+      setNotifications(data);
     } catch (error) {
       console.error('Error fetching notifications:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    //fetchNotifications(); 
+    fetchNotifications();
   }, []);
-
 
   const markAsRead = id => {
     const updatedNotifications = notifications.map(notification =>
-      notification.id === id ? { ...notification, read: true } : notification
+      notification._id === id ? { ...notification, read: true } : notification
     );
     setNotifications(updatedNotifications);
   };
@@ -46,20 +38,26 @@ const NotificationScreen = ({route}) => {
   const renderNotificationItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.notificationItem, item.read ? styles.readNotification : styles.unreadNotification]}
-      onPress={() => markAsRead(item.id)}>
+      onPress={() => markAsRead(item._id)}>
       <Text style={[styles.notificationTitle, { fontSize: width * 0.04 }]}>{item.title}</Text>
-      <Text style={[styles.notificationMessage, { fontSize: width * 0.035 }]}>{item.message}</Text>
+      <Text style={[styles.notificationMessage, { fontSize: width * 0.035 }]}>{item.content}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: '#6495ed', fontSize: width * 0.06 }]}>सूचनाएं</Text>
-      <FlatList
-        data={notifications}
-        renderItem={renderNotificationItem}
-        keyExtractor={item => item.id.toString()}
-      />
+      {loading ? (
+        <Text style={styles.loadingText}>लोड हो रहा है...</Text>
+      ) : notifications.length === 0 ? (
+        <Text style={styles.noNotificationsText}>कोई सूचनाएं नहीं हैं</Text>
+      ) : (
+        <FlatList
+          data={notifications}
+          renderItem={renderNotificationItem}
+          keyExtractor={item => item._id.toString()}
+        />
+      )}
     </View>
   );
 };
@@ -75,6 +73,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: width * 0.05,
     textAlign: 'center',
+  },
+  loadingText: {
+    textAlign: 'center',
+    fontSize: width * 0.04,
+    color: '#555',
+  },
+  noNotificationsText: {
+    textAlign: 'center',
+    fontSize: width * 0.04,
+    color: '#555',
   },
   notificationItem: {
     backgroundColor: '#fff',
