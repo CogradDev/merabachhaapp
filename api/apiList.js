@@ -1,5 +1,5 @@
 export const server = 'https://cograd-erp-backend.onrender.com';
-//export const server = 'http://192.168.102.165:8080';
+//export const server = 'http://192.168.31.73:8080';
 
 
 const apiList = {

@@ -185,7 +185,7 @@ const ComplaintsScreen = ({route}) => {
     // Create FormData object to send the complaint
     const formData = new FormData();
     formData.append('role', 'PARENT');
-    formData.append('message', studentName);
+    formData.append('message', '');
     formData.append('studentId', student.studentId);
     formData.append('id', parentId);
     formData.append('schoolId', student.schoolId);
@@ -244,7 +244,6 @@ const ComplaintsScreen = ({route}) => {
       const response = await fetch(apiList.getComplaints(parentId));
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
         const sortedData = data.sort((a, b) => b.date - a.date);
         setRecordings(sortedData);
       } else {
@@ -261,13 +260,23 @@ const ComplaintsScreen = ({route}) => {
     fetchComplaints();
   }, []);
 
+  function extractPart(url) {
+    // Split the URL by '/'
+    const parts = url.split('/');
+    // Get the last part (the file name with extension)
+    const fileName = parts[parts.length - 1];
+    // Split the file name by '-' and take the first two parts to form "Arju-complaint2"
+    const extractedPart = fileName.split('-').slice(0, 2).join('-');
+    return extractedPart;
+  }
+
   // Function to render each recording item in the list
   const renderRecordingItem = ({item}) => (
     <TouchableOpacity
       style={styles.recordingItem}
       onPress={() => playAudio(item.audio)}>
       <View style={styles.recordingDetails}>
-        <Text style={styles.recordingName}>{item.message + `-शिकायत`}</Text>
+        <Text style={styles.recordingName}>{extractPart(item.audio)}</Text>
         <Text style={styles.recordingDate}>{formatDate(item.date)}</Text>
       </View>
       <View style={styles.statusContainer}>

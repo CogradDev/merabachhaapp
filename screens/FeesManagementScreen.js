@@ -86,25 +86,44 @@ const FeesManagementScreen = ({route}) => {
       const attendanceData = await attendanceResponse.json();
 
       console.log(attendanceData);
-
       if (attendanceData.attendance && attendanceData.attendance.length > 0) {
         const absences = {};
         attendanceData.attendance.forEach(att => {
-          if (att.status === 'a') {
-            const date = new Date(att.date);
-            const dateString = date.toISOString().split('T')[0];
-            absences[dateString] = {
-              selected: true,
-              marked: true,
-              selectedColor: 'red',
-              dotColor: 'red',
-            };
+          const date = new Date(att.date);
+          const dateString = date.toISOString().split('T')[0];
+          
+          // Initialize the absence object with common properties
+          let absence = {
+            selected: true,
+            marked: true,
+          };
+      
+          // Assign colors based on status
+          switch (att.status) {
+            case 'a':
+              absence.selectedColor = 'red';
+              absence.dotColor = 'red';
+              break;
+            case 'p':
+              absence.selectedColor = 'green';
+              absence.dotColor = 'green';
+              break;
+            case 'l':
+              absence.selectedColor = 'grey';
+              absence.dotColor = 'grey';
+              break;
+            default:
+              break;
           }
+      
+          absences[dateString] = absence;
         });
+      
         setAttendanceData(absences);
       } else {
         setAttendanceData({});
       }
+      
     } catch (error) {
       console.error('Error fetching data:', error);
       setAttendanceData({});
@@ -126,10 +145,10 @@ const FeesManagementScreen = ({route}) => {
             <Text style={styles.infoLabel}>कुल फीस:</Text>
             <Text style={styles.infoValue}>₹{feesData.totalFees}</Text>
           </View>
-          <View style={styles.infoContainer}>
+          {/* <View style={styles.infoContainer}>
             <Text style={styles.infoLabel}>चुकाई गई राशि:</Text>
             <Text style={styles.infoValue}>₹{feesData.paidAmount}</Text>
-          </View>
+          </View> */}
           <View style={styles.infoContainer}>
             <Text style={styles.infoLabel}>शेष राशि:</Text>
             <Text style={styles.infoValue}>₹{feesData.remainingAmount}</Text>

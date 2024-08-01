@@ -11,10 +11,7 @@ const PermissionScreen = ({ navigation, route }) => {
     try {
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        //PermissionsAndroid.PERMISSIONS.NOTIFICATIONS,
-        // Add more permissions here following the same format
-        // PermissionsAndroid.PERMISSIONS.CAMERA,
-        // PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       ]);
 
       console.log('Permission Results:', granted);
@@ -44,10 +41,7 @@ const PermissionScreen = ({ navigation, route }) => {
         <View style={styles.row}>
           <Text style={styles.cell}>नोटिफिकेशन</Text>
         </View>
-        {/* Add more permissions here following the same format */}
-        {/* <View style={styles.row}>
-          <Text style={styles.cell}>कैमरा</Text>
-        </View> */}
+
       </View>
       <TouchableOpacity style={styles.button} onPress={handlePermissionRequest}>
         <Text style={styles.buttonText}>अनुमति दें</Text>

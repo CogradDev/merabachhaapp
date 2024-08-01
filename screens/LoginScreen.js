@@ -19,6 +19,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import apiList from '../api/apiList';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 const {width, height} = Dimensions.get('window');
 
@@ -34,9 +35,11 @@ const LoginScreen = ({navigation}) => {
       alert('कृपया सही फ़ोन नंबर डाले');
       return;
     }
-  
+
     setIsLoading(true); // Start loading
-  
+
+    const token = await messaging().getToken();
+
     // API call to send OTP
     try {
       const loginUrl = apiList.login;
@@ -45,9 +48,9 @@ const LoginScreen = ({navigation}) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phoneNumber: value }), //for formated value use formatedValue
+        body: JSON.stringify({phoneNumber: value, token: token}), //for formated value use formatedValue
       });
-  
+
       const data = await response.json();
       console.log('Login response data:', data);
       if (response.ok) {
@@ -56,16 +59,14 @@ const LoginScreen = ({navigation}) => {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('phone', value);
         await AsyncStorage.setItem('parentData', JSON.stringify(data));
-  
+
         const resetAction = CommonActions.reset({
           index: 0,
           routes: [
             {
               name:
-                PERMISSIONS !== RESULTS.GRANTED
-                  ? 'PermissionScreen'
-                  : 'Main',
-              params: { parentData: data },
+                PERMISSIONS !== RESULTS.GRANTED ? 'PermissionScreen' : 'Main',
+              params: {parentData: data},
             },
           ],
         });
@@ -80,7 +81,6 @@ const LoginScreen = ({navigation}) => {
       setIsLoading(false); // Stop loading
     }
   };
-  
 
   return (
     <KeyboardAvoidingView
@@ -112,7 +112,6 @@ const LoginScreen = ({navigation}) => {
               placeholder="अपना फोन नंबर डालें"
               withDarkTheme
               withShadow
-              autoFocus
               containerStyle={styles.phoneInputContainer}
               textContainerStyle={styles.phoneInputTextContainer}
             />
