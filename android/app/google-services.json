@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188494707945",
+    "project_id": "mera-bachha-8b3a2",
+    "storage_bucket": "mera-bachha-8b3a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188494707945:android:0c0493389776b3d4ae0478",
+        "android_client_info": {
+          "package_name": "com.merabachhaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB56Eprv8XcLx_DhG4B4nsKilMzWIXf8FI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

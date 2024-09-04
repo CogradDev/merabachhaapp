@@ -1,4 +1,6 @@
 export const server = 'https://cograd-erp-backend.onrender.com';
+//export const server = 'http://192.168.31.73:8080';
+
 
 const apiList = {
   login: `${server}/parent/login`,
@@ -6,14 +8,9 @@ const apiList = {
   fees: parentId => `${server}/parent/feesDetails/${parentId}`,
   attendance: studentId => `${server}/student/studentAttendance/${studentId}`,
   progressReport: studentId => `${server}/examResult/${studentId}`,
-
-  //req = to register a complain, body(role, studentId, parentId, schoolId, audio)
   sendComplaint: `${server}/complains/register`,
-
-  //req = parentId
-  //res = all the complaints raised by parent (studentId, name, status of complain)
   getComplaints: parentId => `${server}/complains/parentComplain/${parentId}`,
-  getNotifiactions: parentId => `${server}/notifications/${parentId}`,
+  getNotifications: parentId => `${server}/notifications/parent/${parentId}`,
 };
 
 export default apiList;

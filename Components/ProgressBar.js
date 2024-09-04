@@ -9,31 +9,20 @@ const ProgressBar = ({statusText}) => {
   let status = 0;
   const statusList = [
     'समीक्षा के अंतर्गत',
-    'कक्षा शिक्षक द्वारा समीक्षा की गई',
     'प्राचार्य द्वारा समीक्षा की गई',
+    'कक्षा शिक्षक द्वारा समीक्षा की गई',
     'शिकायत का समाधान हो गया',
   ];
 
   if (statusText === 'UNRESOLVED') {
     status = 0;
-  } else {
+  } else if (statusText === 'status1') {
     status = 1;
+  } else if (statusText === 'status2') {
+    status = 2;
+  } else {
+    status = 3;
   }
-
-  const getStatusLabel = () => {
-    switch (status) {
-      case 0:
-        return 'समीक्षा के अंतर्गत';
-      case 1:
-        return 'कक्षा शिक्षक द्वारा समीक्षा की गई';
-      case 2:
-        return 'प्राचार्य द्वारा समीक्षा की गई';
-      case 3:
-        return 'शिकायत का समाधान हो गया';
-      default:
-        return 'अज्ञात स्थिति';
-    }
-  };
 
   const getProgressColors = () => {
     switch (status) {

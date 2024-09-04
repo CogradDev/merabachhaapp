@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,22 +16,21 @@ import feesPic from '../src/image/MoneyManage.png';
 import progressPic from '../src/image/Progress.png';
 import apiList from '../api/apiList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const MainScreen = ({navigation, route}) => {
+const MainScreen = ({ navigation, route }) => {
   const parentData = route.params?.parentData;
-  const [selectedChild, setSelectedChild] = useState(
-    parentData.students[0].name,
-  ); // Default selected child
+  const [selectedChild, setSelectedChild] = useState(parentData.parent.students[0].studentId);
   const [selectedChildInfo, setSelectedChildInfo] = useState(null);
-  const [parentId, setParentId] = useState(parentData._id);
+  const [parentId, setParentId] = useState(parentData.parent._id);
   const [childrenList, setChildrenList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchChildrenInfo = async () => {
     try {
-      const childrenPromises = parentData.students.map(student =>
+      const childrenPromises = parentData.parent.students.map(student =>
         fetch(apiList.getStudentInfo(student.studentId)).then(response =>
           response.json(),
         ),
@@ -39,6 +38,7 @@ const MainScreen = ({navigation, route}) => {
 
       const childrenData = await Promise.all(childrenPromises);
 
+      console.log("children data", childrenData)
       const formattedChildrenData = childrenData.map(child => ({
         studentId: child._id,
         name: child.name,
@@ -97,14 +97,14 @@ const MainScreen = ({navigation, route}) => {
   };
 
   const handleNotificationPress = () => {
-    navigation.navigate('Notification', {parentId: parentId});
+    navigation.navigate('Notification', { parentId: parentId });
   };
 
   const handleLogout = async () => {
     await AsyncStorage.clear();
     navigation.reset({
       index: 0,
-      routes: [{name: 'LoginScreen'}],
+      routes: [{ name: 'WelcomeScreen' }],
     });
   };
 
@@ -119,42 +119,41 @@ const MainScreen = ({navigation, route}) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        {childrenList.length > 1 && (
-          <SelectDropdown
-            data={childrenList.map(child => ({
-              label: child.name,
-              value: child,
-            }))}
-            onSelect={item => setSelectedChild(item.label)}
-            defaultButtonText={selectedChild}
-            renderButton={(selectedItem, isOpened) => (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.label) || selectedChild}
-                </Text>
-              </View>
-            )}
-            renderItem={(item, index, isSelected) => (
-              <TouchableOpacity
-                key={index}
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                  ...(item.label === 'अन्य बच्चा' && {
-                    opacity: 0.5,
-                    backgroundColor: '#f5f5f5',
-                  }),
-                }}
-                onPress={() =>
-                  item.label !== 'अन्य बच्चा' && setSelectedChild(item.label)
-                }>
-                <Text style={styles.dropdownItemTxtStyle}>{item.label}</Text>
-              </TouchableOpacity>
-            )}
-            showsVerticalScrollIndicator={false}
-            dropdownStyle={styles.dropdownMenuStyle}
-          />
-        )}
+        <SelectDropdown
+          data={childrenList.map(child => ({
+            label: child.name,
+            value: child,
+          }))}
+          onSelect={item => setSelectedChild(item.label)}
+          defaultButtonText="छात्र चुनें"
+          renderButton={(selectedItem, isOpened) => (
+            <View style={styles.dropdownButtonStyle}>
+              <Text style={styles.dropdownButtonTxtStyle}>
+                {(selectedItem && selectedItem.label) || 'छात्र चुनें'}
+              </Text>
+              <Icon name="caret-down" size={20} color="#000" />
+            </View>
+          )}
+          renderItem={(item, index, isSelected) => (
+            <TouchableOpacity
+              key={index}
+              style={{
+                ...styles.dropdownItemStyle,
+                ...(isSelected && { backgroundColor: '#D2D9DF' }),
+                ...(item.label === 'अन्य बच्चा' && {
+                  opacity: 0.5,
+                  backgroundColor: '#f5f5f5',
+                }),
+              }}
+              onPress={() =>
+                item.label !== 'अन्य बच्चा' && setSelectedChild(item.label)
+              }>
+              <Text style={styles.dropdownItemTxtStyle}>{item.label}</Text>
+            </TouchableOpacity>
+          )}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
 
         {/* Notification Bell Icon */}
         <TouchableOpacity
@@ -167,9 +166,7 @@ const MainScreen = ({navigation, route}) => {
       {selectedChildInfo && (
         <View style={styles.childInfoContainer}>
           <Text style={styles.childInfo}>नाम: {selectedChildInfo.name}</Text>
-          <Text style={styles.childInfo}>
-            स्कूल: {selectedChildInfo.school}
-          </Text>
+          <Text style={styles.childInfo}>स्कूल: {selectedChildInfo.school}</Text>
           <Text style={styles.childInfo}>कक्षा: {selectedChildInfo.grade}</Text>
         </View>
       )}
@@ -231,7 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: width * 0.02,
   },
   dropdownButtonStyle: {
@@ -245,7 +242,7 @@ const styles = StyleSheet.create({
     width: '45%',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: width * 0.02,
   },
   dropdownButtonTxtStyle: {
@@ -282,7 +279,7 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.05,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: width * 0.02,
     backgroundColor: '#fff',
     paddingHorizontal: width * 0.03,
@@ -304,7 +301,6 @@ const styles = StyleSheet.create({
   },
   logoutBox: {
     borderColor: '#dc3545',
-    //backgroundColor: '#f8d7da',
     borderWidth: 2,
     borderRadius: 8,
   },
@@ -314,7 +310,6 @@ const styles = StyleSheet.create({
     color: '#dc3545',
     textAlign: 'center',
   },
-
   boxText: {
     fontSize: width * 0.06,
     fontWeight: 'bold',
@@ -329,7 +324,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: width * 0.02,
     borderWidth: 1,
     borderColor: '#dcdcdc',
