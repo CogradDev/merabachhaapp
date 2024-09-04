@@ -15,7 +15,7 @@ import 'react-native-gesture-handler';
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState(null);
+  const [initialRoute, setInitialRoute] = useState("WelcomeScreen");
 
   useEffect(() => {
     const checkLoginStatus = async () => {
