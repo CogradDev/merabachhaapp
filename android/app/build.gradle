@@ -21,8 +21,8 @@ android {
         applicationId "com.merabachhaapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "3"
+        versionCode 9
+        versionName "9"
     }
     signingConfigs {
         debug {

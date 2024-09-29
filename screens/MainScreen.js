@@ -71,7 +71,7 @@ const MainScreen = ({ navigation, route }) => {
     const selectedChildData = childrenList.find(
       child => child.name === selectedChild,
     );
-    navigation.navigate('fees', {
+    navigation.navigate('Fees', {
       parentId: parentId,
       studentId: selectedChildData.studentId,
     });
@@ -81,7 +81,7 @@ const MainScreen = ({ navigation, route }) => {
     const selectedChildData = childrenList.find(
       child => child.name === selectedChild,
     );
-    navigation.navigate('complaint', {
+    navigation.navigate('Complaint', {
       student: selectedChildData,
       parentId: parentId,
     });
@@ -91,7 +91,7 @@ const MainScreen = ({ navigation, route }) => {
     const selectedChildData = childrenList.find(
       child => child.name === selectedChild,
     );
-    navigation.navigate('progress', {
+    navigation.navigate('Progress', {
       studentId: selectedChildData.studentId,
     });
   };

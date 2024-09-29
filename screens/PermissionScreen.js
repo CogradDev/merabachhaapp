@@ -13,13 +13,15 @@ const PermissionScreen = ({ navigation, route }) => {
         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       ]);
-
+  
       console.log('Permission Results:', granted);
-
-      if (
-        Object.values(granted).every(status => status === PermissionsAndroid.RESULTS.GRANTED)
-      ) {
-        navigation.navigate('Main', {parentData : parentData});
+  
+      const allPermissionsGranted = Object.values(granted).every(
+        status => status === PermissionsAndroid.RESULTS.GRANTED
+      );
+  
+      if (allPermissionsGranted) {
+        navigation.navigate('Main', { parentData });
       } else {
         alert('कृपया सभी आवश्यक अनुमतियां देने के लिए स्वीकृति दें।');
       }
@@ -27,6 +29,7 @@ const PermissionScreen = ({ navigation, route }) => {
       console.log('Error requesting permissions:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>
